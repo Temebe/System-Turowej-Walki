@@ -13,4 +13,7 @@ Game::~Game()
 
 void Game::run()
 {
+	while (true) {
+		menuScene.render();
+	}
 }

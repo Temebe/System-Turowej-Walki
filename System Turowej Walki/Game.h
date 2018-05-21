@@ -7,9 +7,11 @@
 #include <SFML\Window.hpp>
 #include <SFML\System.hpp>
 #include <iostream>
+#include "MenuScene.h"
 
 class Game
 {
+	MenuScene menuScene;
 public:
 	Game();
 	virtual ~Game();
