@@ -23,7 +23,7 @@ MenuScene::~MenuScene()
 {
 }
 
-void MenuScene::render()
+int MenuScene::render()
 {
 	while (true) {
 		window.clear(sf::Color::Black);
@@ -36,25 +36,28 @@ void MenuScene::render()
 		window.pollEvent(event);
 		if (event.type == sf::Event::Closed) {
 			window.close();
-			break;
+			return 5;
 		}
 		if (event.type == sf::Event::MouseButtonPressed) {
 			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 300) // NEW GAME
 				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 345)) {
 				std::cout << "New game" << std::endl;
+				return 3;
 			}
 			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 350) // LOAD GAME
 				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 395)) {
 				std::cout << "Load game" << std::endl;
+				return 2;
 			}
 			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 400) // OPTIONS GAME
 				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 445)) {
 				std::cout << "Options" << std::endl;
+				return 1;
 			}
 			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 450) // EXIT GAME
 				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 495)) {
 				std::cout << "Exit" << std::endl;
-				break;
+				return 5;
 			}
 		}
 		window.display();

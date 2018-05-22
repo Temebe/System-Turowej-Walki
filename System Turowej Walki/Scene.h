@@ -17,6 +17,7 @@ protected:
 	sf::Mouse mouse;
 	Knight knight;
 public:
+	int render();
 	Scene();
 	virtual ~Scene();
 };

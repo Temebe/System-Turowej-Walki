@@ -8,6 +8,6 @@ class MenuScene :
 public:
 	MenuScene();
 	virtual ~MenuScene();
-	void render();
+	int render();
 };
 
