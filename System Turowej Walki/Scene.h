@@ -13,7 +13,7 @@ class Scene
 protected:
 	sf::Font font;
 	sf::Event event;
-	sf::RenderWindow window{ sf::VideoMode{ 1024, 800 }, "System Turowej Walki" };
+	sf::RenderWindow window;
 	sf::Mouse mouse;
 	Knight knight;
 public:

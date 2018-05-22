@@ -4,9 +4,9 @@
 
 int SelectScene::render()
 {
+	window.create(sf::VideoMode{ 1024, 800 }, "System Turowej Walki");
 	while (true) {
 		window.clear(sf::Color::Black);
-		std::cout << "select" << std::endl;
 		window.draw(test);
 		window.pollEvent(event);
 		if (event.type == sf::Event::Closed) {
@@ -17,6 +17,7 @@ int SelectScene::render()
 			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 300) // do podmianki na inny przycisk
 				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 345)) {
 				std::cout << "New game" << std::endl;
+				window.close();
 				return 3;
 			}
 		}

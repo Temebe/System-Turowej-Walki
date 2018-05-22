@@ -16,28 +16,28 @@ void Game::run()
 {
 	while (true) {
 		switch (actualScene) {
-		case 0:
-			std::cout << "0" << std::endl;
+		case 0: //menu
+			std::cout << actualScene << std::endl;
 			actualScene = menuScene.render();
 			break;
-		case 1:
-			std::cout << "1" << std::endl;
+		case 1: //options
+			std::cout << actualScene << std::endl;
+			actualScene = 5;
+			break;
+		case 2: //load game
+			std::cout << actualScene << std::endl;
+			actualScene = 5;
+			break;
+		case 3: //team select
+			std::cout << actualScene << std::endl;
 			actualScene = selectScene.render();
 			break;
-		case 2:
-			std::cout << "2" << std::endl;
+		case 4: //battleground
+			std::cout << actualScene << std::endl;
 			actualScene = 5;
 			break;
-		case 3:
-			std::cout << "3" << std::endl;
-			actualScene = 5;
-			break;
-		case 4:
-			std::cout << "4" << std::endl;
-			actualScene = 5;
-			break;
-		case 5:
-			std::cout << "5" << std::endl;
+		case 5: //exit
+			std::cout << actualScene << std::endl;
 			return;
 		}
 	}

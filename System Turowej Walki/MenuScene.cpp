@@ -25,6 +25,7 @@ MenuScene::~MenuScene()
 
 int MenuScene::render()
 {
+	window.create(sf::VideoMode{ 1024, 800 }, "System Turowej Walki");
 	while (true) {
 		window.clear(sf::Color::Black);
 		window.draw(knight);
@@ -42,21 +43,25 @@ int MenuScene::render()
 			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 300) // NEW GAME
 				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 345)) {
 				std::cout << "New game" << std::endl;
+				window.close();
 				return 3;
 			}
 			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 350) // LOAD GAME
 				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 395)) {
 				std::cout << "Load game" << std::endl;
+				window.close();
 				return 2;
 			}
 			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 400) // OPTIONS GAME
 				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 445)) {
 				std::cout << "Options" << std::endl;
+				window.close();
 				return 1;
 			}
 			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 450) // EXIT GAME
 				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 495)) {
 				std::cout << "Exit" << std::endl;
+				window.close();
 				return 5;
 			}
 		}

@@ -17,7 +17,7 @@ void Unit::move()
 
 Knight::Knight()
 {
-	texture.loadFromFile("include/characters/knight2.png");
+	texture.loadFromFile("include/characters/knight.png");
 	this->setTexture(texture);
 }
 

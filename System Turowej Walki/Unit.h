@@ -18,6 +18,6 @@ class Knight
 	sf::Texture texture;
 public:
 	Knight();
-	virtual ~Knight();
+	~Knight();
 };
 
