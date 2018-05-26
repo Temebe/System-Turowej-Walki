@@ -11,9 +11,9 @@
 class Scene
 {
 protected:
+	//sf::Window *window;
 	sf::Font font;
 	sf::Event event;
-	sf::RenderWindow window;
 	sf::Mouse mouse;
 	Knight knight;
 public:

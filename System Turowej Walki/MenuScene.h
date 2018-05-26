@@ -7,7 +7,7 @@ class MenuScene :
 	sf::Text test;
 public:
 	MenuScene();
-	virtual ~MenuScene();
-	int render();
+	~MenuScene();
+	int render(sf::RenderWindow& window);
 };
 

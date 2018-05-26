@@ -8,7 +8,6 @@ Scene::Scene()
 	{
 		std::cout << "Font nam sie zesral" << std::endl;
 	}
-	window.setFramerateLimit(60);
 }
 
 

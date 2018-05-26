@@ -4,6 +4,8 @@
 
 Game::Game()
 {
+	window.create(sf::VideoMode{ 1024, 800 }, "System Turowej Walki");
+	window.setFramerateLimit(60);
 	actualScene = 0;
 }
 
@@ -18,7 +20,7 @@ void Game::run()
 		switch (actualScene) {
 		case 0: //menu
 			std::cout << actualScene << std::endl;
-			actualScene = menuScene.render();
+			actualScene = menuScene.render(window);
 			break;
 		case 1: //options
 			std::cout << actualScene << std::endl;
@@ -30,7 +32,7 @@ void Game::run()
 			break;
 		case 3: //team select
 			std::cout << actualScene << std::endl;
-			actualScene = selectScene.render();
+			actualScene = selectScene.render(window);
 			break;
 		case 4: //battleground
 			std::cout << actualScene << std::endl;
