@@ -9,12 +9,15 @@
 #include <iostream>
 #include "MenuScene.h"
 #include "SelectScene.h"
+#include "OptionsMenu.h"
 
 class Game
 {
 	sf::RenderWindow window;
 	MenuScene menuScene;
 	SelectScene selectScene;
+	OptionsMenu optionsScene;
+	sf::Music music;
 	int actualScene; //0 -> menu, 1 -> options, 2 -> load game, 3 -> team select, 4 -> battleground, 5 -> exit
 public:
 	Game();

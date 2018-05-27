@@ -10,5 +10,6 @@ public:
 	InterfaceButton();
 	virtual ~InterfaceButton();
 	void setTextureImage(std::string path);
+	bool isMouseOver(sf::Mouse& mouse);
 };
 

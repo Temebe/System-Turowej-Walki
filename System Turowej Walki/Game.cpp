@@ -7,6 +7,9 @@ Game::Game()
 	window.create(sf::VideoMode{ 1024, 800 }, "System Turowej Walki");
 	window.setFramerateLimit(60);
 	actualScene = 0;
+	music.openFromFile("include/music/menu.ogg");
+	music.setVolume(100);
+	music.play();
 }
 
 
@@ -24,7 +27,7 @@ void Game::run()
 			break;
 		case 1: //options
 			std::cout << actualScene << std::endl;
-			actualScene = 5;
+			actualScene = optionsScene.render(window, music);
 			break;
 		case 2: //load game
 			std::cout << actualScene << std::endl;

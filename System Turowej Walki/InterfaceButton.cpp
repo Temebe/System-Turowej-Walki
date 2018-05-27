@@ -17,3 +17,9 @@ void InterfaceButton::setTextureImage(std::string path)
 	texture.loadFromFile(path);
 	this->setTexture(texture);
 }
+
+bool InterfaceButton::isMouseOver(sf::Mouse& mouse)
+{
+
+	return false;
+}
