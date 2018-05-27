@@ -10,6 +10,7 @@ int SelectScene::render(sf::RenderWindow& window)
 	while (true) {
 		window.clear(sf::Color::Black);
 		window.draw(test);
+		//Ikony klas
 		window.draw(knightA);
 		window.draw(knightB);
 		window.draw(warriorA);
@@ -20,6 +21,7 @@ int SelectScene::render(sf::RenderWindow& window)
 		window.draw(archerB);
 		window.draw(riderA);
 		window.draw(riderB);
+		//Przyciski + i -
 		window.draw(upa1);
 		window.draw(upa2);
 		window.draw(upa3);
@@ -40,6 +42,7 @@ int SelectScene::render(sf::RenderWindow& window)
 		window.draw(dnb3);
 		window.draw(dnb4);
 		window.draw(dnb5);
+		//Texty ilosci jednostek
 		window.draw(a1);
 		window.draw(a2);
 		window.draw(a3);
@@ -50,6 +53,9 @@ int SelectScene::render(sf::RenderWindow& window)
 		window.draw(b3);
 		window.draw(b4);
 		window.draw(b5);
+		window.draw(upMap);
+		window.draw(dnMap);
+		window.draw(mapSizeText);
 		window.pollEvent(event);
 		/*if (event.type == sf::Event::Closed) {
 			window.close();
@@ -177,6 +183,18 @@ int SelectScene::render(sf::RenderWindow& window)
 				sb5 = std::to_string(vb5);
 				b5.setString(sb5);
 			}
+			if (upMap.isMouseOver(mouse, window)) {
+				std::cout << "upMap" << std::endl;
+				mapSize++;
+				mapSizeText.setString(std::to_string(mapSize) + "x" + std::to_string(mapSize));
+			}
+			if (dnMap.isMouseOver(mouse, window)) {
+				std::cout << "dnMap" << std::endl;
+				if (mapSize != 0) {
+					mapSize--;
+					mapSizeText.setString(std::to_string(mapSize) + "x" + std::to_string(mapSize));
+				}
+			}
 		}
 		if (event.type == sf::Event::MouseButtonReleased) {
 			mouseHold = false;
@@ -302,6 +320,14 @@ SelectScene::SelectScene()
 	b3.setPosition(846, 396);
 	b4.setPosition(846, 544);
 	b5.setPosition(846, 692);
+	upMap.setTexture(up);
+	dnMap.setTexture(dn);
+	upMap.setPosition(462, 300);
+	dnMap.setPosition(542, 300);
+	mapSizeText.setFont(font);
+	mapSizeText.setPosition(500, 250);
+	mapSizeText.setString("0x0");
+	mapSize = 0;
 }
 
 SelectScene::~SelectScene()

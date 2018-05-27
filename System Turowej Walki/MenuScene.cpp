@@ -38,6 +38,9 @@ int MenuScene::render(sf::RenderWindow& window)
 			return 5;
 		}
 		if (event.type == sf::Event::MouseButtonPressed) {
+			if (knight.isMouseOver(mouse, window)) {
+				std::cout << "Auc!" << std::endl;
+			}
 			if(newGame.isMouseOver(mouse, window)) {
 				std::cout << "New game" << std::endl;
 				return 3;

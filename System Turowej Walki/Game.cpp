@@ -32,7 +32,7 @@ void Game::run()
 			break;
 		case 2: //load game
 			std::cout << actualScene << std::endl;
-			actualScene = 5;
+			actualScene = 0;
 			break;
 		case 3: //team select
 			std::cout << actualScene << std::endl;
@@ -40,7 +40,7 @@ void Game::run()
 			break;
 		case 4: //battleground
 			std::cout << actualScene << std::endl;
-			actualScene = 5;
+			actualScene = 0;
 			break;
 		case 5: //exit
 			std::cout << actualScene << std::endl;

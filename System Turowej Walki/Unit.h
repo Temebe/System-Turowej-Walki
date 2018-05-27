@@ -10,6 +10,7 @@ public:
 	Unit();
 	virtual ~Unit();
 	void move();
+	bool isMouseOver(sf::Mouse& mouse, sf::RenderWindow& window);
 };
 
 class Knight
