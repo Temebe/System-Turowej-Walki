@@ -8,7 +8,8 @@ Game::Game()
 	window.setFramerateLimit(60);
 	actualScene = 0;
 	music.openFromFile("include/music/menu.ogg");
-	music.setVolume(100);
+	music.setVolume(10);
+	music.setLoop(true);
 	music.play();
 }
 

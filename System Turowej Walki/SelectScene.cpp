@@ -57,141 +57,121 @@ int SelectScene::render(sf::RenderWindow& window)
 		} JAK TO NAPRAWIC*/
 		if ((event.type == sf::Event::MouseButtonPressed)&&(mouseHold != true)) {
 			mouseHold = true;
-			if ((mouse.getPosition(window).x > 148) && (mouse.getPosition(window).y > 50)
-				&& (mouse.getPosition(window).x < 178) && (mouse.getPosition(window).y < 80)) {
+			if(upa1.isMouseOver(mouse, window)) {
 				std::cout << "upa1" << std::endl;
 				va1++;
 				sa1 = std::to_string(va1);
 				a1.setString(sa1);
 			}
-			if ((mouse.getPosition(window).x > 148) && (mouse.getPosition(window).y > 148)
-				&& (mouse.getPosition(window).x < 178) && (mouse.getPosition(window).y < 178)) {
+			if (dna1.isMouseOver(mouse, window)) {
 				std::cout << "dna1" << std::endl;
 				va1--;
 				sa1 = std::to_string(va1);
 				a1.setString(sa1);
 			}
-			if ((mouse.getPosition(window).x > 148) && (mouse.getPosition(window).y > 198)
-				&& (mouse.getPosition(window).x < 178) && (mouse.getPosition(window).y < 228)) {
+			if (upa2.isMouseOver(mouse, window)) {
 				std::cout << "upa2" << std::endl;
 				va2++;
 				sa2 = std::to_string(va2);
 				a2.setString(sa2);
 			}
-			if ((mouse.getPosition(window).x > 148) && (mouse.getPosition(window).y > 296)
-				&& (mouse.getPosition(window).x < 178) && (mouse.getPosition(window).y < 326)) {
+			if (dna2.isMouseOver(mouse, window)) {
 				std::cout << "dna2" << std::endl;
 				va2--;
 				sa2 = std::to_string(va2);
 				a2.setString(sa2);
 			}
-			if ((mouse.getPosition(window).x > 148) && (mouse.getPosition(window).y > 346)
-				&& (mouse.getPosition(window).x < 178) && (mouse.getPosition(window).y < 376)) {
+			if (upa3.isMouseOver(mouse, window)) {
 				std::cout << "upa3" << std::endl;
 				va3++;
 				sa3 = std::to_string(va3);
 				a3.setString(sa3);
 			}
-			if ((mouse.getPosition(window).x > 148) && (mouse.getPosition(window).y > 444)
-				&& (mouse.getPosition(window).x < 178) && (mouse.getPosition(window).y < 474)) {
+			if (dna3.isMouseOver(mouse, window)) {
 				std::cout << "dna3" << std::endl;
 				va3--;
 				sa3 = std::to_string(va3);
 				a3.setString(sa3);
 			}
-			if ((mouse.getPosition(window).x > 148) && (mouse.getPosition(window).y > 494)
-				&& (mouse.getPosition(window).x < 178) && (mouse.getPosition(window).y < 524)) {
+			if (upa4.isMouseOver(mouse, window)) {
 				std::cout << "upa4" << std::endl;
 				va4++;
 				sa4 = std::to_string(va4);
 				a4.setString(sa4);
 			}
-			if ((mouse.getPosition(window).x > 148) && (mouse.getPosition(window).y > 592)
-				&& (mouse.getPosition(window).x < 178) && (mouse.getPosition(window).y < 622)) {
+			if (dna4.isMouseOver(mouse, window)) {
 				std::cout << "dna4" << std::endl;
 				va4--;
 				sa4 = std::to_string(va4);
 				a4.setString(sa4);
 			}
-			if ((mouse.getPosition(window).x > 148) && (mouse.getPosition(window).y > 642)
-				&& (mouse.getPosition(window).x < 178) && (mouse.getPosition(window).y < 672)) {
+			if (upa5.isMouseOver(mouse, window)) {
 				std::cout << "upa5" << std::endl;
 				va5++;
 				sa5 = std::to_string(va5);
 				a5.setString(sa5);
 			}
-			if ((mouse.getPosition(window).x > 148) && (mouse.getPosition(window).y > 740)
-				&& (mouse.getPosition(window).x < 178) && (mouse.getPosition(window).y < 770)) {
+			if (dna5.isMouseOver(mouse, window)) {
 				std::cout << "dna5" << std::endl;
 				va5--;
 				sa5 = std::to_string(va5);
 				a5.setString(sa5);
 			}
-			if ((mouse.getPosition(window).x > 846) && (mouse.getPosition(window).y > 50)
-				&& (mouse.getPosition(window).x < 876) && (mouse.getPosition(window).y < 80)) {
+			if (upb1.isMouseOver(mouse, window)) {
 				std::cout << "upb1" << std::endl;
 				vb1++;
 				sb1 = std::to_string(vb1);
 				b1.setString(sb1);
 			}
-			if ((mouse.getPosition(window).x > 846) && (mouse.getPosition(window).y > 148)
-				&& (mouse.getPosition(window).x < 876) && (mouse.getPosition(window).y < 178)) {
+			if (dnb1.isMouseOver(mouse, window)) {
 				std::cout << "dnb1" << std::endl;
 				vb1--;
 				sb1 = std::to_string(vb1);
 				b1.setString(sb1);
 			}
-			if ((mouse.getPosition(window).x > 846) && (mouse.getPosition(window).y > 198)
-				&& (mouse.getPosition(window).x < 876) && (mouse.getPosition(window).y < 228)) {
+			if (upb2.isMouseOver(mouse, window)) {
 				std::cout << "upb2" << std::endl;
 				vb2++;
 				sb2 = std::to_string(vb2);
 				b2.setString(sb2);
 			}
-			if ((mouse.getPosition(window).x > 846) && (mouse.getPosition(window).y > 296)
-				&& (mouse.getPosition(window).x < 876) && (mouse.getPosition(window).y < 326)) {
+			if (dnb2.isMouseOver(mouse, window)) {
 				std::cout << "dnb2" << std::endl;
 				vb2--;
 				sb2 = std::to_string(vb2);
 				b2.setString(sb2);
 			}
-			if ((mouse.getPosition(window).x > 846) && (mouse.getPosition(window).y > 346)
-				&& (mouse.getPosition(window).x < 876) && (mouse.getPosition(window).y < 376)) {
+			if (upb3.isMouseOver(mouse, window)) {
 				std::cout << "upb3" << std::endl;
 				vb3++;
 				sb3 = std::to_string(vb3);
 				b3.setString(sb3);
 			}
-			if ((mouse.getPosition(window).x > 846) && (mouse.getPosition(window).y > 444)
-				&& (mouse.getPosition(window).x < 876) && (mouse.getPosition(window).y < 474)) {
+			if (dnb3.isMouseOver(mouse, window)) {
 				std::cout << "dnb3" << std::endl;
 				vb3--;
 				sb3 = std::to_string(vb3);
 				b3.setString(sb3);
 			}
-			if ((mouse.getPosition(window).x > 846) && (mouse.getPosition(window).y > 494)
-				&& (mouse.getPosition(window).x < 876) && (mouse.getPosition(window).y < 524)) {
+			if (upb4.isMouseOver(mouse, window)) {
 				std::cout << "upb4" << std::endl;
 				vb4++;
 				sb4 = std::to_string(vb4);
 				b4.setString(sb4);
 			}
-			if ((mouse.getPosition(window).x > 846) && (mouse.getPosition(window).y > 592)
-				&& (mouse.getPosition(window).x < 876) && (mouse.getPosition(window).y < 622)) {
+			if (dnb4.isMouseOver(mouse, window)) {
 				std::cout << "dnb4" << std::endl;
 				vb4--;
 				sb4 = std::to_string(vb4);
 				b4.setString(sb4);
 			}
-			if ((mouse.getPosition(window).x > 846) && (mouse.getPosition(window).y > 642)
-				&& (mouse.getPosition(window).x < 876) && (mouse.getPosition(window).y < 672)) {
+			if (upb5.isMouseOver(mouse, window)) {
 				std::cout << "upb5" << std::endl;
 				vb5++;
 				sb5 = std::to_string(vb5);
 				b5.setString(sb5);
 			}
-			if ((mouse.getPosition(window).x > 846) && (mouse.getPosition(window).y > 740)
-				&& (mouse.getPosition(window).x < 876) && (mouse.getPosition(window).y < 770)) {
+			if (dnb5.isMouseOver(mouse, window)) {
 				std::cout << "dnb5" << std::endl;
 				vb5--;
 				sb5 = std::to_string(vb5);

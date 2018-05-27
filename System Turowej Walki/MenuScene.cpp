@@ -38,23 +38,19 @@ int MenuScene::render(sf::RenderWindow& window)
 			return 5;
 		}
 		if (event.type == sf::Event::MouseButtonPressed) {
-			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 300) // NEW GAME
-				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 345)) {
+			if(newGame.isMouseOver(mouse, window)) {
 				std::cout << "New game" << std::endl;
 				return 3;
 			}
-			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 350) // LOAD GAME
-				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 395)) {
+			if (loadGame.isMouseOver(mouse, window)) {
 				std::cout << "Load game" << std::endl;
 				return 2;
 			}
-			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 400) // OPTIONS GAME
-				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 445)) {
+			if (options.isMouseOver(mouse, window)) {
 				std::cout << "Options" << std::endl;
 				return 1;
 			}
-			if ((mouse.getPosition(window).x > 310) && (mouse.getPosition(window).y > 450) // EXIT GAME
-				&& (mouse.getPosition(window).x < 490) && (mouse.getPosition(window).y < 495)) {
+			if (exit.isMouseOver(mouse, window)) {
 				std::cout << "Exit" << std::endl;
 				return 5;
 			}

@@ -13,7 +13,9 @@ OptionsMenu::OptionsMenu()
 	volDn.setPosition(200, 100);
 	volText.setFont(font);
 	volText.setPosition(150, 100);
-	volText.setString("100");
+	volText.setString("10");
+	returnButton.setTextureImage("include/buttons/return.png");
+	returnButton.setPosition(800, 700);
 }
 
 
@@ -29,23 +31,19 @@ int OptionsMenu::render(sf::RenderWindow& window, sf::Music& music)
 		window.draw(volUp);
 		window.draw(volDn);
 		window.draw(volText);
+		window.draw(returnButton);
 		window.pollEvent(event);
 		if ((event.type == sf::Event::MouseButtonPressed) && (mouseHold != true)) {
 			mouseHold = true;
-			if ((mouse.getPosition(window).x > 100) && (mouse.getPosition(window).y > 100)
-				&& (mouse.getPosition(window).x < 130) && (mouse.getPosition(window).y < 130)) {
+			if (volUp.isMouseOver(mouse, window)) {
 				music.setVolume(round(music.getVolume() + 1));
 				volText.setString(std::to_string(music.getVolume()));
 			}
-			if ((mouse.getPosition(window).x > 200) && (mouse.getPosition(window).y > 100)
-				&& (mouse.getPosition(window).x < 230) && (mouse.getPosition(window).y < 130)) {
+			if (volDn.isMouseOver(mouse, window)) {
 				music.setVolume(round(music.getVolume() - 1));
 				volText.setString(std::to_string(music.getVolume()));
 			}
-			if ((mouse.getPosition(window).x > 500) && (mouse.getPosition(window).y > 500)
-				&& (mouse.getPosition(window).x < 800) && (mouse.getPosition(window).y < 800)) {
-				return 0;
-			}
+			if (returnButton.isMouseOver(mouse, window)) return 0;
 		}
 		if (event.type == sf::Event::MouseButtonReleased) {
 			mouseHold = false;

@@ -18,8 +18,15 @@ void InterfaceButton::setTextureImage(std::string path)
 	this->setTexture(texture);
 }
 
-bool InterfaceButton::isMouseOver(sf::Mouse& mouse)
+bool InterfaceButton::isMouseOver(sf::Mouse& mouse, sf::RenderWindow& window)
 {
-
-	return false;
+	int x, y;
+	x = this->getTexture()->getSize().x;
+	y = this->getTexture()->getSize().y;
+	if ((mouse.getPosition(window).x >= this->getPosition().x) && (mouse.getPosition(window).y >= this->getPosition().y)
+	&& (mouse.getPosition(window).x <= this->getPosition().x + x) && (mouse.getPosition(window).y <= this->getPosition().y + y)) {
+		return true;
+	}
+	else
+		return false;
 }
