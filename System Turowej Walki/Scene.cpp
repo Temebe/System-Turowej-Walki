@@ -6,7 +6,7 @@ Scene::Scene()
 {
 	if (!font.loadFromFile("include/Calibri.ttf"))
 	{
-		std::cout << "Font nam sie zesral" << std::endl;
+		std::cout << "Unable to load font" << std::endl;
 	}
 }
 

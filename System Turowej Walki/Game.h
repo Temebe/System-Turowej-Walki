@@ -10,6 +10,8 @@
 #include "MenuScene.h"
 #include "SelectScene.h"
 #include "OptionsMenu.h"
+#include "BattlegroundScene.h"
+#include "Save.h"
 
 class Game
 {
@@ -17,7 +19,10 @@ class Game
 	MenuScene menuScene;
 	SelectScene selectScene;
 	OptionsMenu optionsScene;
+	BattlegroundScene battlegroundScene;
+	Save save;
 	sf::Music music;
+	bool loaded;
 	int actualScene; //0 -> menu, 1 -> options, 2 -> load game, 3 -> team select, 4 -> battleground, 5 -> exit
 public:
 	Game();

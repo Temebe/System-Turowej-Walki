@@ -84,7 +84,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, bool& loade
 		temp = first;
 		std::cout << "TUTAJ" << std::endl;
 		for (unsigned int i = 0; i < save.getMapSize(); i++) {
-			for (unsigned int j = 0; j < save.getMapSize(); j++) {
+			for (unsigned int j = 0; j < save.getMapSize()-1; j++) {
 				window.draw(*temp);
 				temp = temp->getRight();
 			}

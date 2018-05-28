@@ -11,6 +11,7 @@ Game::Game()
 	music.setVolume(10);
 	music.setLoop(true);
 	music.play();
+	loaded = false;
 }
 
 
@@ -36,11 +37,11 @@ void Game::run()
 			break;
 		case 3: //team select
 			std::cout << actualScene << std::endl;
-			actualScene = selectScene.render(window);
+			actualScene = selectScene.render(window, save);
 			break;
 		case 4: //battleground
 			std::cout << actualScene << std::endl;
-			actualScene = 0;
+			actualScene = battlegroundScene.render(window, save, loaded);
 			break;
 		case 5: //exit
 			std::cout << actualScene << std::endl;

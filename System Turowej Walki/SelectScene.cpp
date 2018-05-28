@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "SelectScene.h"
 #include <cstdlib>
-#include <string>
 
 
-int SelectScene::render(sf::RenderWindow& window)
+int SelectScene::render(sf::RenderWindow& window, Save& save)
 {
 	bool mouseHold;
 	while (true) {
@@ -56,6 +55,7 @@ int SelectScene::render(sf::RenderWindow& window)
 		window.draw(upMap);
 		window.draw(dnMap);
 		window.draw(mapSizeText);
+		window.draw(startGame);
 		window.pollEvent(event);
 		/*if (event.type == sf::Event::Closed) {
 			window.close();
@@ -195,6 +195,14 @@ int SelectScene::render(sf::RenderWindow& window)
 					mapSizeText.setString(std::to_string(mapSize) + "x" + std::to_string(mapSize));
 				}
 			}
+			if (startGame.isMouseOver(mouse, window)) {
+				std::cout << "start game" << std::endl;
+				//1 -> knight, 2 -> warrior, 3 -> archer, 4 -> rider, 5 -> mage
+				save.setTeamA(va1, va3, va2, va5, va4);
+				save.setTeamB(vb1, vb3, vb2, vb5, vb4);
+				save.setMapSize(mapSize);
+				return 4;
+			}
 		}
 		if (event.type == sf::Event::MouseButtonReleased) {
 			mouseHold = false;
@@ -328,6 +336,9 @@ SelectScene::SelectScene()
 	mapSizeText.setPosition(500, 250);
 	mapSizeText.setString("0x0");
 	mapSize = 0;
+	startGameTxt.loadFromFile("include/buttons/startgame.png");
+	startGame.setTexture(startGameTxt);
+	startGame.setPosition(437, 700);
 }
 
 SelectScene::~SelectScene()
