@@ -14,6 +14,8 @@ public:
 	void setRight(Square *temp);
 	void setUp(Square *temp);
 	void setDown(Square *temp);
+	bool isTouched();
+	void touch();
 	Square *getLeft();
 	Square *getRight();
 	Square *getUp();

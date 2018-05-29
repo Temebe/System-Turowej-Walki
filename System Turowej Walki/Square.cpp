@@ -25,6 +25,16 @@ void Square::setDown(Square * temp)
 	else down = temp;
 }
 
+bool Square::isTouched()
+{
+	return touched;
+}
+
+void Square::touch()
+{
+	touched = !touched;
+}
+
 Square *Square::getLeft()
 {
 	if (left == nullptr) return nullptr;
@@ -56,6 +66,7 @@ Square::Square()
 	up = nullptr;
 	down = nullptr;
 	occupyingUnit = nullptr;
+	touched = false;
 }
 
 
