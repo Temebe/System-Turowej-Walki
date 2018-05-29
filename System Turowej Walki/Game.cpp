@@ -12,6 +12,8 @@ Game::Game()
 	music.setLoop(true);
 	music.play();
 	loaded = false;
+	view = window.getDefaultView();
+	window.setView(view);
 }
 
 
@@ -41,7 +43,7 @@ void Game::run()
 			break;
 		case 4: //battleground
 			std::cout << actualScene << std::endl;
-			actualScene = battlegroundScene.render(window, save, loaded);
+			actualScene = battlegroundScene.render(window, save, view);
 			break;
 		case 5: //exit
 			std::cout << actualScene << std::endl;

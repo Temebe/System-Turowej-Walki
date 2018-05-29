@@ -16,7 +16,6 @@ public:
 class Knight
 	:public Unit
 {
-	sf::Texture texture;
 public:
 	Knight();
 	~Knight();

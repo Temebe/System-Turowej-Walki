@@ -30,8 +30,8 @@ bool Unit::isMouseOver(sf::Mouse & mouse, sf::RenderWindow & window)
 
 Knight::Knight()
 {
-	texture.loadFromFile("include/characters/knight.png");
-	this->setTexture(texture);
+	//texture.loadFromFile("include/characters/knight.png");
+	//this->setTexture(texture);
 }
 
 Knight::~Knight()

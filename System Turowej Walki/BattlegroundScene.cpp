@@ -2,7 +2,7 @@
 #include "BattlegroundScene.h"
 
 
-int BattlegroundScene::render(sf::RenderWindow & window, Save& save, bool& loaded)
+int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& view)
 {
 	mouseHold = false;
 	//test
@@ -18,57 +18,59 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, bool& loade
 	std::cout << "Archers from team B: " << save.getTeamB().at(2) << std::endl;
 	std::cout << "Riders from team B: " << save.getTeamB().at(3) << std::endl;
 	std::cout << "Mages from team B: " << save.getTeamB().at(4) << std::endl;*/
-	if (loaded != true) {
-		std::cout << "TO ROBIE" << std::endl;
-		for (unsigned int i = 0; i < save.getMapSize(); i++) {
-			for (unsigned int j = 0; j < save.getMapSize(); j++) {
-				std::cout << i << " " << j << std::endl;
-				if ((i == 0) && (j == 0)) {
-					first = new Square;
-					first->setTexture(mapTile);
-					first->setPosition(0, 0);
+
+	//Tworzenie  planszy NxN
+	std::cout << "TO ROBIE" << std::endl;
+	for (unsigned int i = 0; i < save.getMapSize(); i++) {
+		for (unsigned int j = 0; j < save.getMapSize(); j++) {
+			std::cout << i << " " << j << std::endl;
+			if ((i == 0) && (j == 0)) {
+				first = new Square;
+				first->setTexture(mapTile);
+				first->setPosition(0, 0);
+			}
+			else if ((i == 0) && (j == 1)){
+				prev = new Square;
+				prev->setTexture(mapTile);
+				prev->setPosition(64, 0);
+				first->setRight(prev);
+				prev->setLeft(first);
+			}
+			else if ((i == 0) && (j > 1)) {
+				temp = new Square;
+				temp->setTexture(mapTile);
+				temp->setPosition((float)j*64, 0);
+				temp->setLeft(prev);
+				prev->setRight(temp);
+				prev = temp;
+			}
+			else if ((i > 0) && (j == 0)) {
+				prev = new Square;
+				prev->setTexture(mapTile);
+				prev->setPosition((float)j * 64, (float)i * 64);
+				temp = first;
+				for (unsigned int k = 1; k < i; k++) {
+					temp = temp->getDown();
 				}
-				else if ((i == 0) && (j == 1)){
-					prev = new Square;
-					prev->setTexture(mapTile);
-					prev->setPosition(64, 0);
-					first->setRight(prev);
-					prev->setLeft(first);
-				}
-				else if ((i == 0) && (j > 1)) {
-					temp = new Square;
-					temp->setTexture(mapTile);
-					temp->setPosition((float)j*64, 0);
-					temp->setLeft(prev);
-					prev->setRight(temp);
-					prev = temp;
-				}
-				else if ((i > 0) && (j == 0)) {
-					prev = new Square;
-					prev->setTexture(mapTile);
-					prev->setPosition((float)j * 64, (float)i * 64);
-					temp = first;
-					for (unsigned int k = 1; k < i; k++) {
-						temp = temp->getDown();
-					}
-					temp->setDown(prev);
-					prev->setUp(temp);
-				}
-				else {
-					temp = new Square;
-					temp->setTexture(mapTile);
-					temp->setPosition((float)j * 64, (float)i * 64);
-					temp->setLeft(prev);
-					prev->setRight(temp);
-					temp->setUp(prev->getUp()->getRight());
-					temp->getUp()->setDown(temp);
-					prev = temp;
-				}
+				temp->setDown(prev);
+				prev->setUp(temp);
+			}
+			else {
+				temp = new Square;
+				temp->setTexture(mapTile);
+				temp->setPosition((float)j * 64, (float)i * 64);
+				temp->setLeft(prev);
+				prev->setRight(temp);
+				temp->setUp(prev->getUp()->getRight());
+				temp->getUp()->setDown(temp);
+				prev = temp;
 			}
 		}
-		temp = nullptr;
-		prev = nullptr;
 	}
+	temp = nullptr;
+	prev = nullptr;
+
+
 	while (true) {
 		window.clear(sf::Color::Black);
 		window.pollEvent(event);
@@ -83,7 +85,8 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, bool& loade
 				temp = temp->getDown();
 			}
 		}
-		if ((event.type == sf::Event::MouseButtonPressed) && (mouseHold != true)) {
+		//if ((event.type == sf::Event::MouseButtonPressed) && (mouseHold != true)) {
+		if ((mouse.isButtonPressed(sf::Mouse::Left)) && (mouseHold != true)) {
 			temp = first;
 			nullSquare = false;
 			for (int i = 0; i < mouse.getPosition(window).x / 64; i++) {
@@ -134,8 +137,31 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, bool& loade
 			//std::cout << mouse.getPosition(window).x << " " << mouse.getPosition(window).y << std::endl;
 			mouseHold = true;
 		}
+		if (mouse.isButtonPressed(sf::Mouse::Right)) {
+			if (holding) {
+				/*if (mouse.getPosition(window).x > view.getCenter().x) x = 2;
+				else if (mouse.getPosition(window).x < view.getCenter().x) x = -2;
+				else x = 0;
+				if (mouse.getPosition(window).y > view.getCenter().y) y = 2;
+				else if (mouse.getPosition(window).y < view.getCenter().y) y = -2;
+				else y = 0;*/
+				//std::cout << prevPos.x - mouse.getPosition(window).x << " " << prevPos.y - mouse.getPosition(window).y << std::endl;
+				//view.move((float)(prevPos.x - mouse.getPosition(window).x), (float)(prevPos.y - mouse.getPosition(window).y));
+				//view.move(x, y);
+				view.setCenter((sf::Vector2f)mouse.getPosition(window));
+				window.setView(view);
+				//prevPos = mouse.getPosition();
+				//window.getView().move(2, 3);
+				//view.move(2,3);
+			}
+			else {
+				//prevPos = mouse.getPosition();
+				holding = true;
+			}
+		}
 		if (event.type == sf::Event::MouseButtonReleased) {
 			mouseHold = false;
+			holding = false;
 		}
 		window.display();
 	}
@@ -148,6 +174,9 @@ BattlegroundScene::BattlegroundScene()
 	temp = nullptr;
 	prev = nullptr;
 	actual = nullptr;
+	holding = false;
+	text1.setFont(font);
+	text2.setFont(font);
 }
 
 

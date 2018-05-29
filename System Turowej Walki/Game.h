@@ -16,6 +16,7 @@
 class Game
 {
 	sf::RenderWindow window;
+	sf::View view;
 	MenuScene menuScene;
 	SelectScene selectScene;
 	OptionsMenu optionsScene;
