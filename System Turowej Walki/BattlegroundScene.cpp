@@ -20,10 +20,8 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 	std::cout << "Mages from team B: " << save.getTeamB().at(4) << std::endl;*/
 
 	//Tworzenie  planszy NxN
-	std::cout << "TO ROBIE" << std::endl;
 	for (unsigned int i = 0; i < save.getMapSize(); i++) {
 		for (unsigned int j = 0; j < save.getMapSize(); j++) {
-			std::cout << i << " " << j << std::endl;
 			if ((i == 0) && (j == 0)) {
 				first = new Square;
 				first->setTexture(mapTile);
@@ -69,10 +67,6 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 	}
 	temp = nullptr;
 	prev = nullptr;
-	std::cout << save.getTeamA().at(0) << std::endl;
-	std::cout << save.getTeamA().at(4) << std::endl;
-	std::cout << save.getTeamB().at(0) << std::endl;
-	std::cout << save.getTeamB().at(4) << std::endl;
 	KnA = save.getTeamA().at(0);
 	WaA = save.getTeamA().at(1);
 	ArA = save.getTeamA().at(2);
@@ -108,15 +102,16 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 		window.draw(selectedUnit);
 		window.draw(text1);
 		window.draw(text2);
-		//if ((event.type == sf::Event::MouseButtonPressed) && (mouseHold != true)) {
 		if ((mouse.isButtonPressed(sf::Mouse::Left)) && (mouseHold != true)) {
 			temp = first;
 			nullSquare = false;
+			clickedPos.x = 1;
 			for (int i = 0; i < (int)((mouse.getPosition(window).x + view.getCenter().x - 512) / 64); i++) {
 				if (temp->getRight() == nullptr) {
 					nullSquare = true;
 					break;
 				}
+				clickedPos.x = clickedPos.x + 1;
 				temp = temp->getRight();
 			}
 			for (int i = 0; i < (int)((mouse.getPosition(window).y + view.getCenter().y - 400) / 64); i++) {
@@ -129,7 +124,11 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 			if (!nullSquare) {
 				if (actual == nullptr) {
 					if (temp != nullptr) {
-						if (temp->getUnit() == nullptr) {
+						if ((teamASelecting) && (clickedPos.x > save.getMapSize() / 2)) {
+						}
+						else if ((!teamASelecting) && (clickedPos.x <= (save.getMapSize() + 1) / 2)) {
+						}
+						else if (temp->getUnit() == nullptr) {
 							actual = temp;
 							temp->touch();
 							temp->setTexture(mapTileTouched);
@@ -175,7 +174,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(MaA));
 							break;
 						case KnightB:
-							temp->putUnit(new Knight(false));
+							temp->putUnit(new Knight(false)); // false for B team
 							setUpUnit(temp, knightImB);
 							KnB--;
 							if (KnB == 0) changeUnitSelect(unitType);
@@ -221,47 +220,127 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							actual = nullptr;
 						}
 						else {
-							temp->touch();
-							temp->setTexture(mapTileTouched);
-							actual->touch();
-							actual->setTexture(mapTile);
-							actual = temp;
+							if (temp != nullptr) {
+								if ((teamASelecting) && (clickedPos.x > save.getMapSize() / 2)) {
+									std::cout << "first if" << std::endl;
+									actual->touch();
+									actual->setTexture(mapTile);
+									actual = nullptr;
+								}
+								else if ((!teamASelecting) && (clickedPos.x <= (save.getMapSize() + 1) / 2)) {
+									std::cout << "second if" << std::endl;
+									actual->touch();
+									actual->setTexture(mapTile);
+									actual = nullptr;
+								}
+								else {
+									temp->touch();
+									temp->setTexture(mapTileTouched);
+									actual->touch();
+									actual->setTexture(mapTile);
+									actual = temp;
+								}
+							}
 						}
 					}
 				}
-				/*if (temp->isTouched() == false) {
-					temp->setTexture(mapTileTouched);
-				}
-				else {
-					temp->setTexture(mapTile);
-				}
-				temp->touch();
-				if ((actual != temp) && (actual != nullptr)) {
-
-				}*/
 			}
-			//std::cout << mouse.getPosition(window).x << " " << mouse.getPosition(window).y << std::endl;
 			mouseHold = true;
 		}
 		if (mouse.isButtonPressed(sf::Mouse::Right)) {
 			if (holding) {
-				/*if (mouse.getPosition(window).x > view.getCenter().x) x = 2;
-				else if (mouse.getPosition(window).x < view.getCenter().x) x = -2;
-				else x = 0;
-				if (mouse.getPosition(window).y > view.getCenter().y) y = 2;
-				else if (mouse.getPosition(window).y < view.getCenter().y) y = -2;
-				else y = 0;*/
-				//std::cout << prevPos.x - mouse.getPosition(window).x << " " << prevPos.y - mouse.getPosition(window).y << std::endl;
-				//view.move((float)(prevPos.x - mouse.getPosition(window).x), (float)(prevPos.y - mouse.getPosition(window).y));
-				//view.move(x, y);
 				view.setCenter((sf::Vector2f)mouse.getPosition(window));
 				window.setView(view);
-				//prevPos = mouse.getPosition();
-				//window.getView().move(2, 3);
-				//view.move(2,3);
 			}
 			else {
-				//prevPos = mouse.getPosition();
+				holding = true;
+			}
+		}
+		if (event.type == sf::Event::KeyPressed) {
+			if (event.key.code == sf::Keyboard::Escape) {
+				return 5;
+			}
+		}
+		if (event.type == sf::Event::MouseButtonReleased) {
+			mouseHold = false;
+			holding = false;
+		}
+		window.display();
+	}
+
+	//Playing mode
+
+	while (1) {
+		window.clear(sf::Color::Black);
+		window.pollEvent(event);
+		temp = first;
+		for (unsigned int i = 0; i < save.getMapSize(); i++) {
+			for (unsigned int j = 0; j < save.getMapSize(); j++) {
+				window.draw(*temp);
+				if (temp->getUnit() != nullptr)
+					window.draw(*temp->getUnit());
+				temp = temp->getRight();
+			}
+			temp = first;
+			for (unsigned int j = 0; j < i + 1; j++) {
+				temp = temp->getDown();
+			}
+		}
+		text1.setPosition(view.getCenter().x, view.getCenter().y + 300);
+		text2.setPosition(view.getCenter().x + 200, view.getCenter().y + 250);
+		selectedUnit.setPosition(view.getCenter().x + 384, view.getCenter().y + 272);
+		window.draw(text1);
+		window.draw(text2);
+		if ((mouse.isButtonPressed(sf::Mouse::Left)) && (mouseHold != true))	{
+			temp = first;
+			nullSquare = false;
+			for (int i = 0; i < (int)((mouse.getPosition(window).x + view.getCenter().x - 512) / 64); i++) {
+				if (temp->getRight() == nullptr) {
+					nullSquare = true;
+					break;
+				}
+				temp = temp->getRight();
+			}
+			for (int i = 0; i < (int)((mouse.getPosition(window).y + view.getCenter().y - 400) / 64); i++) {
+				if ((temp->getDown() == nullptr) || (nullSquare)) {
+					nullSquare = true;
+					break;
+				}
+				temp = temp->getDown();
+			}
+			if (!nullSquare) {
+				if (actual == nullptr) {
+					if (temp != nullptr) {
+						if (temp->getUnit() == nullptr) {
+							actual = temp;
+							temp->touch();
+							temp->setTexture(mapTileTouched);
+						}
+					}
+				}
+				else {
+					if (actual == temp) {
+						temp->touch();
+						temp->setTexture(mapTile);
+						actual = nullptr;
+					}
+					else {
+						temp->touch();
+						temp->setTexture(mapTileTouched);
+						actual->touch();
+						actual->setTexture(mapTile);
+						actual = temp;
+					}
+				}
+			}
+			mouseHold = true;
+		}
+		if (mouse.isButtonPressed(sf::Mouse::Right)) {
+			if (holding) {
+				view.setCenter((sf::Vector2f)mouse.getPosition(window));
+				window.setView(view);
+			}
+			else {
 				holding = true;
 			}
 		}
@@ -283,6 +362,7 @@ void BattlegroundScene::changeTeamSelect()
 	text1.setString("Gracz B rozstawia jednostki");
 	unitType = KnightB;
 	changeUnitSelect(unitType);
+	teamASelecting = false;
 }
 
 void BattlegroundScene::changeUnitSelect(UnitType& unit)
@@ -391,6 +471,8 @@ BattlegroundScene::BattlegroundScene()
 	prev = nullptr;
 	actual = nullptr;
 	holding = false;
+	selectingMode = true;
+	teamASelecting = true;
 	unitType = KnightA;
 	text1.setFont(font);
 	text2.setFont(font);
