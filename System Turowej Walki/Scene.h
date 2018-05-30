@@ -15,7 +15,6 @@ protected:
 	sf::Font font;
 	sf::Event event;
 	sf::Mouse mouse;
-	Knight knight;
 public:
 	int render();
 	Scene();

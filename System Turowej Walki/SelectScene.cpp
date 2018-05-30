@@ -7,7 +7,7 @@ int SelectScene::render(sf::RenderWindow& window, Save& save)
 {
 	bool mouseHold;
 	while (true) {
-		window.clear(sf::Color::Black);
+		window.clear(sf::Color(120, 145, 205));
 		window.draw(test);
 		//Ikony klas
 		window.draw(knightA);
@@ -242,21 +242,26 @@ SelectScene::SelectScene()
 	test.setPosition(200, 200);
 	up.loadFromFile("include/buttons/+.png");
 	dn.loadFromFile("include/buttons/-.png");
-	knightIm.loadFromFile("include/characters/knight.png");
-	warriorIm.loadFromFile("include/characters/warrior.png");
-	archerIm.loadFromFile("include/characters/archer.png");
-	riderIm.loadFromFile("include/characters/rider.png");
-	mageIm.loadFromFile("include/characters/mage.png");
-	knightA.setTexture(knightIm);
-	knightB.setTexture(knightIm);
-	warriorA.setTexture(warriorIm);
-	warriorB.setTexture(warriorIm);
-	archerA.setTexture(archerIm);
-	archerB.setTexture(archerIm);
-	riderA.setTexture(riderIm);
-	riderB.setTexture(riderIm);
-	mageA.setTexture(mageIm);
-	mageB.setTexture(mageIm);
+	knightImA.loadFromFile("include/characters/knight.png");
+	warriorImA.loadFromFile("include/characters/warrior.png");
+	archerImA.loadFromFile("include/characters/archer.png");
+	riderImA.loadFromFile("include/characters/rider.png");
+	mageImA.loadFromFile("include/characters/mage.png");
+	knightImB.loadFromFile("include/characters/knightB.png");
+	warriorImB.loadFromFile("include/characters/warriorB.png");
+	archerImB.loadFromFile("include/characters/archerB.png");
+	riderImB.loadFromFile("include/characters/riderB.png");
+	mageImB.loadFromFile("include/characters/mageB.png");
+	knightA.setTexture(knightImA);
+	knightB.setTexture(knightImB);
+	warriorA.setTexture(warriorImA);
+	warriorB.setTexture(warriorImB);
+	archerA.setTexture(archerImA);
+	archerB.setTexture(archerImB);
+	riderA.setTexture(riderImA);
+	riderB.setTexture(riderImB);
+	mageA.setTexture(mageImA);
+	mageB.setTexture(mageImB);
 	knightA.setPosition(20, 50);
 	knightB.setPosition(876, 50);
 	warriorA.setPosition(20, 198);

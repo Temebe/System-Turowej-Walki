@@ -35,6 +35,16 @@ void Square::touch()
 	touched = !touched;
 }
 
+void Square::putUnit(Unit * unit)
+{
+	occupyingUnit = unit;
+}
+
+Unit *Square::getUnit()
+{
+	return occupyingUnit;
+}
+
 Square *Square::getLeft()
 {
 	if (left == nullptr) return nullptr;

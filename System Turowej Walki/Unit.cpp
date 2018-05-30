@@ -6,6 +6,16 @@ Unit::Unit()
 {
 }
 
+Unit::Unit(bool choice)
+{
+	team = choice;
+}
+
+bool Unit::isTeamA()
+{
+	return team;
+}
+
 
 Unit::~Unit()
 {
@@ -30,11 +40,78 @@ bool Unit::isMouseOver(sf::Mouse & mouse, sf::RenderWindow & window)
 
 Knight::Knight()
 {
-	//texture.loadFromFile("include/characters/knight.png");
-	//this->setTexture(texture);
+
+}
+
+Knight::Knight(bool choice)
+{
+	team = choice;
 }
 
 Knight::~Knight()
 {
 
 }
+
+Warrior::Warrior()
+{
+
+}
+
+Warrior::Warrior(bool choice)
+{
+	team = choice;
+}
+
+Warrior::~Warrior()
+{
+
+}
+
+Mage::Mage()
+{
+
+}
+
+Mage::Mage(bool choice)
+{
+	team = choice;
+}
+
+Mage::~Mage()
+{
+
+}
+
+Archer::Archer()
+{
+
+}
+
+Archer::Archer(bool choice)
+{
+	team = choice;
+}
+
+Archer::~Archer()
+{
+
+}
+
+Rider::Rider()
+{
+
+}
+
+Rider::Rider(bool choice)
+{
+	team = choice;
+}
+
+Rider::~Rider()
+{
+
+}
+
+
+
