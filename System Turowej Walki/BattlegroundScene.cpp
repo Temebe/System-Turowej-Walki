@@ -86,7 +86,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 	changeUnitSelect(unitType);
 	//LOOP FOR PLACING TEAMS
 
-	while (true) {
+	while (selectingMode) {
 		window.clear(sf::Color::Black);
 		window.pollEvent(event);
 		temp = first;
@@ -128,9 +128,13 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 			}
 			if (!nullSquare) {
 				if (actual == nullptr) {
-					actual = temp;
-					temp->touch();
-					temp->setTexture(mapTileTouched);
+					if (temp != nullptr) {
+						if (temp->getUnit() == nullptr) {
+							actual = temp;
+							temp->touch();
+							temp->setTexture(mapTileTouched);
+						}
+					}
 				}
 				else {
 					if (actual == temp) {
@@ -143,67 +147,67 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(KnA));
 							break;
 						case WarriorA:
-							temp->putUnit(new Warrior);
+							temp->putUnit(new Warrior(true));
 							setUpUnit(temp, warriorImA);
 							WaA--;
 							if (WaA == 0) changeUnitSelect(unitType);
 							else text2.setString(std::to_string(WaA));
 							break;
 						case ArcherA:
-							temp->putUnit(new Archer);
+							temp->putUnit(new Archer(true));
 							setUpUnit(temp, archerImA);
 							ArA--;
 							if (ArA == 0) changeUnitSelect(unitType);
 							else text2.setString(std::to_string(ArA));
 							break;
 						case RiderA:
-							temp->putUnit(new Rider);
+							temp->putUnit(new Rider(true));
 							setUpUnit(temp, riderImA);
 							RiA--;
 							if (RiA == 0) changeUnitSelect(unitType);
 							else text2.setString(std::to_string(RiA));
 							break;
 						case MageA:
-							temp->putUnit(new Mage);
+							temp->putUnit(new Mage(true));
 							setUpUnit(temp, mageImA);
 							MaA--;
 							if (MaA == 0) changeTeamSelect();
 							else text2.setString(std::to_string(MaA));
 							break;
 						case KnightB:
-							temp->putUnit(new Knight);
-							setUpUnit(temp, knightImA);
-							KnA--;
-							if (KnA == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(KnA));
+							temp->putUnit(new Knight(false));
+							setUpUnit(temp, knightImB);
+							KnB--;
+							if (KnB == 0) changeUnitSelect(unitType);
+							else text2.setString(std::to_string(KnB));
 							break;
 						case WarriorB:
-							temp->putUnit(new Warrior);
-							setUpUnit(temp, warriorImA);
-							WaA--;
-							if (WaA == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(WaA));
+							temp->putUnit(new Warrior(false));
+							setUpUnit(temp, warriorImB);
+							WaB--;
+							if (WaB == 0) changeUnitSelect(unitType);
+							else text2.setString(std::to_string(WaB));
 							break;
 						case ArcherB:
-							temp->putUnit(new Archer);
-							setUpUnit(temp, archerImA);
-							ArA--;
-							if (ArA == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(ArA));
+							temp->putUnit(new Archer(false));
+							setUpUnit(temp, archerImB);
+							ArB--;
+							if (ArB == 0) changeUnitSelect(unitType);
+							else text2.setString(std::to_string(ArB));
 							break;
 						case RiderB:
-							temp->putUnit(new Rider);
-							setUpUnit(temp, riderImA);
-							RiA--;
-							if (RiA == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(RiA));
+							temp->putUnit(new Rider(false));
+							setUpUnit(temp, riderImB);
+							RiB--;
+							if (RiB == 0) changeUnitSelect(unitType);
+							else text2.setString(std::to_string(RiB));
 							break;
 						case MageB:
-							temp->putUnit(new Mage);
-							setUpUnit(temp, mageImA);
-							MaA--;
-							if (MaA == 0) changeTeamSelect();
-							else text2.setString(std::to_string(MaA));
+							temp->putUnit(new Mage(false));
+							setUpUnit(temp, mageImB);
+							MaB--;
+							if (MaB == 0) changeTeamSelect();
+							else text2.setString(std::to_string(MaB));
 							break;
 						}
 						temp->touch();
@@ -211,11 +215,18 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 						actual = nullptr;
 					}
 					else {
-						temp->touch();
-						temp->setTexture(mapTileTouched);
-						actual->touch();
-						actual->setTexture(mapTile);
-						actual = temp;
+						if (temp->getUnit() != nullptr) {
+							actual->touch();
+							actual->setTexture(mapTile);
+							actual = nullptr;
+						}
+						else {
+							temp->touch();
+							temp->setTexture(mapTileTouched);
+							actual->touch();
+							actual->setTexture(mapTile);
+							actual = temp;
+						}
 					}
 				}
 				/*if (temp->isTouched() == false) {
@@ -254,6 +265,11 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 				holding = true;
 			}
 		}
+		if (event.type == sf::Event::KeyPressed) {
+			if (event.key.code == sf::Keyboard::Escape) {
+				return 5;
+			}
+		}
 		if (event.type == sf::Event::MouseButtonReleased) {
 			mouseHold = false;
 			holding = false;
@@ -265,6 +281,8 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 void BattlegroundScene::changeTeamSelect()
 {
 	text1.setString("Gracz B rozstawia jednostki");
+	unitType = KnightB;
+	changeUnitSelect(unitType);
 }
 
 void BattlegroundScene::changeUnitSelect(UnitType& unit)
@@ -310,6 +328,50 @@ void BattlegroundScene::changeUnitSelect(UnitType& unit)
 			break;
 		}
 		else changeTeamSelect();
+	case KnightB:
+		std::cout << "KnightB" << std::endl;
+		if (KnB != 0) {
+			unitType = KnightB;
+			selectedUnit.setTexture(knightImB);
+			text2.setString(std::to_string(KnB));
+			break;
+		}
+	case WarriorB:
+		std::cout << "WarriorB" << std::endl;
+		if (WaB != 0) {
+			unitType = WarriorB;
+			selectedUnit.setTexture(warriorImB);
+			text2.setString(std::to_string(WaB));
+			break;
+		}
+	case ArcherB:
+		std::cout << "ArcherB" << std::endl;
+		if (ArB != 0) {
+			unitType = ArcherB;
+			selectedUnit.setTexture(archerImB);
+			text2.setString(std::to_string(ArB));
+			break;
+		}
+	case RiderB:
+		std::cout << "RiderB" << std::endl;
+		if (RiB != 0) {
+			unitType = RiderB;
+			selectedUnit.setTexture(riderImB);
+			text2.setString(std::to_string(RiB));
+			break;
+		}
+	case MageB:
+		std::cout << "MageB" << std::endl;
+		if (MaB != 0) {
+			unitType = MageB;
+			selectedUnit.setTexture(mageImB);
+			text2.setString(std::to_string(MaB));
+			break;
+		}
+	default:
+		text1.setString("Koniec");
+		text2.setString("0");
+		selectingMode = false;
 		break;
 	}
 }
@@ -342,6 +404,7 @@ BattlegroundScene::BattlegroundScene()
 	archerImB.loadFromFile("include/characters/archerB.png");
 	riderImB.loadFromFile("include/characters/riderB.png");
 	mageImB.loadFromFile("include/characters/mageB.png");
+	text1.setString("Gracz A rozstawia jednostki");
 }
 
 

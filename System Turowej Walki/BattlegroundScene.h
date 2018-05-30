@@ -8,6 +8,7 @@ class BattlegroundScene :
 {
 	std::vector <unsigned int> teamA, teamB;
 	bool mouseHold, nullSquare, holding;
+	bool selectingMode;
 	Square *first, *temp, *prev, *actual;
 	sf::Texture mapTile, mapTileTouched;
 	sf::Texture knightImA, warriorImA, mageImA, riderImA, archerImA;
