@@ -8,9 +8,10 @@ class BattlegroundScene :
 {
 	std::vector <unsigned int> teamA, teamB;
 	bool mouseHold, nullSquare, holding;
-	bool selectingMode, teamASelecting;
+	bool selectingMode, teamASelecting, unitUI;
 	Square *first, *temp, *prev, *actual;
-	sf::Texture mapTile, mapTileTouched;
+	sf::IntRect intRect;
+	sf::Texture mapTile, mapTileTouched, mapTileAble, hpbarIm;
 	sf::Texture knightImA, warriorImA, mageImA, riderImA, archerImA;
 	sf::Texture knightImB, warriorImB, mageImB, riderImB, archerImB;
 	sf::Vector2i clickedPos;
@@ -20,12 +21,16 @@ class BattlegroundScene :
 	sf::Sprite selectedUnit;
 	enum UnitType {KnightA, WarriorA, ArcherA, RiderA, MageA, KnightB, WarriorB, ArcherB, RiderB, MageB};
 	UnitType unitType;
+	InterfaceButton fight, move, idle;
+	sf::Texture fightIm, moveIm, idleIm;
 
 public:
 	int render(sf::RenderWindow& window, Save& save, sf::View& view);
 	void changeTeamSelect();
 	void changeUnitSelect(UnitType& unit);
 	void setUpUnit(Square *temp ,sf::Texture& texture);
+	bool isInRightTeam(Square *temp);
+	Square * findWay(Square * temp, int movement, int iteration, bool val);
 	BattlegroundScene();
 	~BattlegroundScene();
 };

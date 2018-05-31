@@ -87,8 +87,9 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 		for (unsigned int i = 0; i < save.getMapSize(); i++) {
 			for (unsigned int j = 0; j < save.getMapSize(); j++) {
 				window.draw(*temp);
-				if (temp->getUnit() != nullptr)
+				if (temp->getUnit() != nullptr) {
 					window.draw(*temp->getUnit());
+				}
 				temp = temp->getRight();
 			}
 			temp = first;
@@ -269,6 +270,8 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 	}
 
 	//Playing mode
+	text1.setString("Tura gracza A");
+	teamASelecting = true;
 
 	while (1) {
 		window.clear(sf::Color::Black);
@@ -277,8 +280,10 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 		for (unsigned int i = 0; i < save.getMapSize(); i++) {
 			for (unsigned int j = 0; j < save.getMapSize(); j++) {
 				window.draw(*temp);
-				if (temp->getUnit() != nullptr)
+				if (temp->getUnit() != nullptr) {
 					window.draw(*temp->getUnit());
+					window.draw(*temp->getUnit()->getHPBar());
+				}
 				temp = temp->getRight();
 			}
 			temp = first;
@@ -287,10 +292,17 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 			}
 		}
 		text1.setPosition(view.getCenter().x, view.getCenter().y + 300);
-		text2.setPosition(view.getCenter().x + 200, view.getCenter().y + 250);
 		selectedUnit.setPosition(view.getCenter().x + 384, view.getCenter().y + 272);
 		window.draw(text1);
 		window.draw(text2);
+		if (unitUI) {
+			move.setPosition(view.getCenter().x - 512, view.getCenter().y + 300);
+			fight.setPosition(view.getCenter().x - 432, view.getCenter().y + 300);
+			idle.setPosition(view.getCenter().x - 352, view.getCenter().y + 300);
+			window.draw(move);
+			window.draw(fight);
+			window.draw(idle);
+		}
 		if ((mouse.isButtonPressed(sf::Mouse::Left)) && (mouseHold != true))	{
 			temp = first;
 			nullSquare = false;
@@ -311,7 +323,11 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 			if (!nullSquare) {
 				if (actual == nullptr) {
 					if (temp != nullptr) {
-						if (temp->getUnit() == nullptr) {
+						if ((temp->getUnit() != nullptr) && (isInRightTeam(temp))) {
+							std::cout << "unitUI = true" << std::endl;
+							temp->getUnit()->resetMovement();
+							findWay(temp, temp->getUnit()->getTempMovement(), 0, true);
+							unitUI = true;
 							actual = temp;
 							temp->touch();
 							temp->setTexture(mapTileTouched);
@@ -320,16 +336,26 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 				}
 				else {
 					if (actual == temp) {
+						std::cout << "unitUI = false" << std::endl;
+						unitUI = false;
 						temp->touch();
 						temp->setTexture(mapTile);
 						actual = nullptr;
 					}
 					else {
-						temp->touch();
-						temp->setTexture(mapTileTouched);
-						actual->touch();
-						actual->setTexture(mapTile);
-						actual = temp;
+						if (temp->getUnit() == nullptr) unitUI = false;
+						else if (isInRightTeam(temp)) {
+							temp->touch();
+							temp->setTexture(mapTileTouched);
+							actual->touch();
+							actual->setTexture(mapTile);
+							actual = temp;
+						}
+						else {
+							actual->touch();
+							actual->setTexture(mapTile);
+							actual = temp;
+						}
 					}
 				}
 			}
@@ -452,6 +478,8 @@ void BattlegroundScene::changeUnitSelect(UnitType& unit)
 		text1.setString("Koniec");
 		text2.setString("0");
 		selectingMode = false;
+		std::cout << "USTAWILEM" << std::endl;
+		teamASelecting = true;
 		break;
 	}
 }
@@ -461,12 +489,62 @@ void BattlegroundScene::setUpUnit(Square *temp, sf::Texture & texture)
 	temp->getUnit()->setTexture(texture);
 	temp->getUnit()->setPosition(temp->getPosition());
 	temp->getUnit()->setScale(0.5, 0.5);
+	temp->getUnit()->setHPBar(new sf::Sprite); //something is not yes
+	temp->getUnit()->setHPBarTexture(hpbarIm);
+	temp->getUnit()->getHPBar()->setPosition(temp->getUnit()->getPosition().x, (double)temp->getUnit()->getPosition().y + ((double)temp->getUnit()->getTexture()->getSize().y * 0.75 * 0.5));
+}
+
+bool BattlegroundScene::isInRightTeam(Square * temp)
+{
+	return (temp->getUnit()->isTeamA() == teamASelecting);
+}
+
+Square * BattlegroundScene::findWay(Square * temp, int movement, int iteration, bool val)
+{
+	if (temp == nullptr) return nullptr;
+	if (movement != 0) {
+		if (temp->getUp() != nullptr) {
+			if (temp->getUp()->getUnit() == nullptr) {
+				findWay(temp->getUp(), movement - 1, iteration + 1, val);
+			}
+		}
+		if (temp->getDown() != nullptr) {
+			if (temp->getDown()->getUnit() == nullptr) {
+				findWay(temp->getDown(), movement - 1, iteration + 1, val);
+			}
+		}
+		if (temp->getLeft() != nullptr) {
+			if (temp->getLeft()->getUnit() == nullptr) {
+				findWay(temp->getLeft(), movement - 1, iteration + 1, val);
+			}
+		}
+		if (temp->getRight() != nullptr) {
+			if (temp->getRight()->getUnit() == nullptr) {
+				findWay(temp->getRight(), movement - 1, iteration + 1, val);
+			}
+		}
+	}
+	if (iteration != 0) {
+		if (val) {
+			temp->setTexture(mapTileAble);
+			if (temp->getMovementCost() > iteration) temp->setMovementCost(iteration);
+		}
+		else temp->setTexture(mapTile);
+		temp->setAble(val);
+	}
+	/*if (temp->getUp()->getUnit() == nullptr) {
+		if(val)temp->setTexture(mapTileAble);
+		else temp->setTexture(mapTile);
+		temp->getUp()->setAble(val);
+	}*/
 }
 
 BattlegroundScene::BattlegroundScene()
 {
 	mapTile.loadFromFile("include/images/mapTile.png");
 	mapTileTouched.loadFromFile("include/images/mapTileTouched.png");
+	mapTileAble.loadFromFile("include/images/mapTileAble.png");
+	hpbarIm.loadFromFile("include/images/hpbar.png");
 	temp = nullptr;
 	prev = nullptr;
 	actual = nullptr;
@@ -487,6 +565,12 @@ BattlegroundScene::BattlegroundScene()
 	riderImB.loadFromFile("include/characters/riderB.png");
 	mageImB.loadFromFile("include/characters/mageB.png");
 	text1.setString("Gracz A rozstawia jednostki");
+	moveIm.loadFromFile("include/buttons/move.png");
+	idleIm.loadFromFile("include/buttons/idle.png");
+	fightIm.loadFromFile("include/buttons/fight.png");
+	move.setTexture(moveIm);
+	idle.setTexture(idleIm);
+	fight.setTexture(fightIm);
 }
 
 

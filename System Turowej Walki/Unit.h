@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML\Graphics.hpp>
+#include "Square.h"
 
 class Unit
 	:public sf::Sprite
@@ -7,13 +8,20 @@ class Unit
 private:
 protected:
 	bool team; // true -> A team, false -> B team;
-	int hp; //health points
+	int hp, movement, tempMovement; //hp -> health points
+	sf::Sprite *hpBar;
 public:
 	Unit();
 	Unit(bool choice);
+	void resetMovement();
+	void lossTempMovement(int value);
+	int getTempMovement();
+	void setHPBarTexture(sf::Texture& texture);
+	void setHPBar(sf::Sprite *bar);
+	sf::Sprite *getHPBar();
 	bool isTeamA();
 	virtual ~Unit();
-	void move();
+	void move(Square *location, Square *destination);
 	bool isMouseOver(sf::Mouse& mouse, sf::RenderWindow& window);
 };
 

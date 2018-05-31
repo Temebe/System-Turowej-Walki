@@ -25,6 +25,26 @@ void Square::setDown(Square * temp)
 	else down = temp;
 }
 
+void Square::setAble(bool & temp)
+{
+	ableToMove = temp;
+}
+
+void Square::setMovementCost(int & value)
+{
+	movementCost = value;
+}
+
+int Square::getMovementCost()
+{
+	return movementCost;
+}
+
+bool Square::isAbleToMove()
+{
+	return ableToMove;
+}
+
 bool Square::isTouched()
 {
 	return touched;
@@ -77,6 +97,7 @@ Square::Square()
 	down = nullptr;
 	occupyingUnit = nullptr;
 	touched = false;
+	movementCost = 0;
 }
 
 
