@@ -33,6 +33,11 @@ int OptionsMenu::render(sf::RenderWindow& window, sf::Music& music)
 		window.draw(volText);
 		window.draw(returnButton);
 		window.pollEvent(event);
+		if (event.type == sf::Event::KeyPressed) {
+			if (event.key.code == sf::Keyboard::Escape) {
+				return 5;
+			}
+		}
 		if ((event.type == sf::Event::MouseButtonPressed) && (mouseHold != true)) {
 			mouseHold = true;
 			if (volUp.isMouseOver(mouse, window)) {

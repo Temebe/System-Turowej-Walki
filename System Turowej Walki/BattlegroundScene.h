@@ -26,7 +26,7 @@ class BattlegroundScene :
 	sf::Sprite selectedUnit;
 	enum UnitType {KnightA, WarriorA, ArcherA, RiderA, MageA, KnightB, WarriorB, ArcherB, RiderB, MageB};
 	UnitType unitType;
-	enum TurnType {nothing, chooseDirection, chooseTarget};
+	enum TurnType {nothing, chooseDirection, chooseTarget, won};
 	TurnType turnType;
 	InterfaceButton fight, move, idle;
 	sf::Texture fightIm, moveIm, idleIm;
@@ -47,6 +47,8 @@ public:
 	void setNewTurn();
 	void unitUICheck(sf::RenderWindow & window, sf::View & view);
 	void unitUICheck(sf::Event& event);
+	void checkIfUnitFinished(Unit *tempUnit);
+	bool checkIfWon();
 	void moveUnit(Square *location, Square *destination, Unit& unit);
 	BattlegroundScene();
 	~BattlegroundScene();

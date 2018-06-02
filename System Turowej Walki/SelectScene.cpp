@@ -61,6 +61,11 @@ int SelectScene::render(sf::RenderWindow& window, Save& save)
 			window.close();
 			return 5;
 		} JAK TO NAPRAWIC*/
+		if (event.type == sf::Event::KeyPressed) {
+			if (event.key.code == sf::Keyboard::Escape) {
+				return 5;
+			}
+		}
 		if ((event.type == sf::Event::MouseButtonPressed)&&(mouseHold != true)) {
 			mouseHold = true;
 			if(upa1.isMouseOver(mouse, window)) {

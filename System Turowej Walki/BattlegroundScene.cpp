@@ -288,12 +288,11 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 		}
 		window.display();
 	}
-
 	//Playing mode
 	text1.setString("Tura gracza A");
 	selectedUnit.setTexture(knightImA);
 	unitType = KnightA;
-	if (knightsA.at(0) == nullptr) changeUnitTurn(unitType);
+	if (knightsA.size() == 0) changeUnitTurn(unitType);
 	//teamASelecting = true;
 
 	while (1) {
@@ -914,6 +913,7 @@ void BattlegroundScene::chooseDirectionTurn(sf::RenderWindow & window, sf::View 
 				if (temp->isAbleToMove()) {
 					moveUnit(actual, temp, *actual->getUnit());
 					findWay(actual, temp->getUnit()->getTempMovement() + temp->getMovementCost(), 0, false);
+					checkIfUnitFinished(temp->getUnit());
 				}
 			}
 			else {
@@ -951,6 +951,13 @@ void BattlegroundScene::chooseTargetTurn(sf::RenderWindow & window, sf::View & v
 		if (temp->getUnit() != nullptr) {
 			if (temp->getUnit()->isPropTarget()) {
 				actual->getUnit()->attack(temp);
+				if (temp->getUnit() == nullptr) {
+					if (checkIfWon()) {
+						turnType = won;
+						return;
+					}
+				}
+				else checkIfUnitFinished(actual->getUnit());
 			}
 		}
 		findEnemy(actual, actual->getUnit()->getAttackRange(), false, true);
@@ -1059,6 +1066,40 @@ void BattlegroundScene::unitUICheck(sf::Event & event)
 		actual->setTexture(mapTile);
 		actual = nullptr;
 	}
+}
+
+void BattlegroundScene::checkIfUnitFinished(Unit * tempUnit)
+{
+	if ((tempUnit->isMovable() == false) && (tempUnit->canAttack() == false)) {
+		tempUnit->setTurn(true);
+		changeUnitTurn(unitType);
+		turnType = nothing;
+	}
+}
+
+bool BattlegroundScene::checkIfWon()
+{
+	bool AEmpty = true, BEmpty = true;
+	if (knightsA.size() != 0) AEmpty = false;
+	else if (warriorsA.size() != 0) AEmpty = false;
+	else if (archersA.size() != 0) AEmpty = false;
+	else if (magesA.size() != 0) AEmpty = false;
+	else if (ridersA.size() != 0) AEmpty = false;
+	if (knightsB.size() != 0) BEmpty = false;
+	else if (warriorsB.size() != 0) BEmpty = false;
+	else if (archersB.size() != 0) BEmpty = false;
+	else if (magesB.size() != 0) BEmpty = false;
+	else if (ridersB.size() != 0) BEmpty = false;
+	if ((AEmpty == true) && (BEmpty == true)) {
+		text1.setString("REMIS REMIS REMIS");
+	}
+	if (AEmpty == true) {
+		text1.setString("TEAM B WINS");
+	}
+	if (BEmpty == true) {
+		text1.setString("TEAM A WINS");
+	}
+	return (AEmpty || BEmpty);
 }
 
 void BattlegroundScene::moveUnit(Square * location, Square * destination, Unit& unit)
