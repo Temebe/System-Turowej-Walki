@@ -20,6 +20,7 @@ void Unit::resetMovement()
 void Unit::lossTempMovement(int value)
 {
 	tempMovement = tempMovement - value;
+	if (tempMovement <= 0) movable = false;
 }
 
 int Unit::getTempMovement()
@@ -72,12 +73,30 @@ bool Unit::canAttack()
 	return !hasAttacked;
 }
 
+void Unit::setMovable(bool val)
+{
+	movable = val;
+}
+
+bool Unit::isMovable()
+{
+	return movable;
+}
+
+void Unit::prepareForTurn()
+{
+	hasAttacked = false;
+	turn = false;
+	tempMovement = movement;
+	movable = true;
+}
+
 void Unit::setTurn(bool val)
 {
 	turn = val;
 }
 
-void Unit::takeDmg(int amount)
+void Unit::takeDmg(double amount)
 {
 	hp = hp - amount;
 	std::cout << "Hit! Hp left: " << hp << std::endl;
@@ -139,12 +158,13 @@ Knight::Knight(bool choice)
 	tempMovement = 2;
 	attackRange = 1;
 	turn = false;
+	movable = true;
 	std::cout << "Knight! " << tempMovement << std::endl;
 }
 
-void Knight::attack(Unit * target)
+void Knight::attack(Square *target)
 {
-	target->takeDmg(2);
+	target->getUnit()->takeDmg(2);
 	this->hasAttacked = true;
 }
 
@@ -172,11 +192,13 @@ Warrior::Warrior(bool choice)
 	tempMovement = 2;
 	attackRange = 1;
 	turn = false;
+	movable = true;
 }
 
-void Warrior::attack(Unit * target)
+void Warrior::attack(Square *target)
 {
-
+	target->getUnit()->takeDmg(3);
+	this->hasAttacked = true;
 }
 
 Warrior::~Warrior()
@@ -198,11 +220,29 @@ Mage::Mage(bool choice)
 	tempMovement = 2;
 	attackRange = 2;
 	turn = false;
+	movable = true;
 }
 
-void Mage::attack(Unit * target)
+void Mage::attack(Square *target)
 {
-
+	target->getUnit()->takeDmg(3);
+	if (target->getRight() != nullptr) {
+		if (target->getRight()->getUnit() != nullptr)
+			target->getRight()->getUnit()->takeDmg(2);
+	}
+	if (target->getLeft() != nullptr) {
+		if (target->getLeft()->getUnit() != nullptr)
+			target->getLeft()->getUnit()->takeDmg(2);
+	}
+	if (target->getUp() != nullptr) {
+		if (target->getUp()->getUnit() != nullptr)
+			target->getUp()->getUnit()->takeDmg(2);
+	}
+	if (target->getDown() != nullptr) {
+		if (target->getDown()->getUnit() != nullptr)
+			target->getDown()->getUnit()->takeDmg(2);
+	}
+	this->hasAttacked = true;
 }
 
 Mage::~Mage()
@@ -224,10 +264,12 @@ Archer::Archer(bool choice)
 	tempMovement = 3;
 	attackRange = 3;
 	turn = false;
+	movable = true;
 }
 
-void Archer::attack(Unit * target)
+void Archer::attack(Square *target)
 {
+	target->getUnit()->takeDmg(1.5);
 
 }
 
@@ -250,9 +292,10 @@ Rider::Rider(bool choice)
 	tempMovement = 5;
 	attackRange = 1;
 	turn = false;
+	movable = true;
 }
 
-void Rider::attack(Unit * target)
+void Rider::attack(Square *target)
 {
 
 }

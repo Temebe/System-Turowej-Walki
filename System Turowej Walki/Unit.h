@@ -9,8 +9,9 @@ class Unit
 private:
 protected:
 	bool team; // true -> A team, false -> B team;
-	bool turn, hasAttacked, propTarget;
-	int hp, maxHp, movement, tempMovement, attackRange; //hp -> health points
+	bool turn, hasAttacked, propTarget, movable;
+	int maxHp, movement, tempMovement, attackRange; //hp -> health points
+	double hp;
 	sf::Sprite *hpBar;
 	int type;
 public:
@@ -28,12 +29,15 @@ public:
 	bool isTeamA();
 	bool hadTurn();
 	bool canAttack();
+	void setMovable(bool val);
+	bool isMovable();
+	void prepareForTurn();
 	void setTurn(bool val);
-	void takeDmg(int amount);
+	void takeDmg(double amount);
 	void setPropTarget(bool val);
 	bool isPropTarget();
 	virtual ~Unit();
-	virtual void attack(Unit *target) = 0;
+	virtual void attack(Square *target) = 0;
 	//void move(Square *location, Square *destination);
 	//virtual void findEnemy(Square *location, sf::Texture& mapTileAble, sf::Texture &mapTile, bool val) = 0;
 	bool isMouseOver(sf::Mouse& mouse, sf::RenderWindow& window);
@@ -45,7 +49,7 @@ class Knight
 public:
 	Knight();
 	Knight(bool choice);
-	void attack(Unit *target);
+	void attack(Square *target);
 	~Knight();
 	//void findEnemy(Square *location, sf::Texture& mapTileAble, sf::Texture &mapTile, bool val);
 };
@@ -55,7 +59,7 @@ class Warrior
 {
 public:
 	Warrior(bool choice);
-	void attack(Unit *target);
+	void attack(Square *target);
 	Warrior();
 	~Warrior();
 };
@@ -65,7 +69,7 @@ class Archer
 {
 public:
 	Archer(bool choice);
-	void attack(Unit *target);
+	void attack(Square *target);
 	Archer();
 	~Archer();
 };
@@ -75,7 +79,7 @@ class Mage
 {
 public:
 	Mage(bool choice);
-	void attack(Unit *target);
+	void attack(Square *target);
 	Mage();
 	~Mage();
 };
@@ -85,7 +89,7 @@ class Rider
 {
 public:
 	Rider(bool choice);
-	void attack(Unit *target);
+	void attack(Square *target);
 	Rider();
 	~Rider();
 };
