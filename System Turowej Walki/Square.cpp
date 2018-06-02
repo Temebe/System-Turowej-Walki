@@ -97,7 +97,7 @@ Square::Square()
 	down = nullptr;
 	occupyingUnit = nullptr;
 	touched = false;
-	movementCost = 0;
+	movementCost = _MAX_INT_DIG;
 }
 
 

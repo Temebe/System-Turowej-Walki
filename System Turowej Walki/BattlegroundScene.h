@@ -7,6 +7,11 @@ class BattlegroundScene :
 	public Scene
 {
 	std::vector <unsigned int> teamA, teamB;
+	std::vector <Unit*> knightsA, knightsB;
+	std::vector <Unit*> warriorsA, warriorsB;
+	std::vector <Unit*> archersA, archersB;
+	std::vector <Unit*> magesA, magesB;
+	std::vector <Unit*> ridersA, ridersB;
 	bool mouseHold, nullSquare, holding;
 	bool selectingMode, teamASelecting, unitUI;
 	Square *first, *temp, *prev, *actual;
@@ -21,6 +26,8 @@ class BattlegroundScene :
 	sf::Sprite selectedUnit;
 	enum UnitType {KnightA, WarriorA, ArcherA, RiderA, MageA, KnightB, WarriorB, ArcherB, RiderB, MageB};
 	UnitType unitType;
+	enum TurnType {nothing, chooseDirection, chooseTarget};
+	TurnType turnType;
 	InterfaceButton fight, move, idle;
 	sf::Texture fightIm, moveIm, idleIm;
 
@@ -28,9 +35,15 @@ public:
 	int render(sf::RenderWindow& window, Save& save, sf::View& view);
 	void changeTeamSelect();
 	void changeUnitSelect(UnitType& unit);
+	//void changeUnitTurn(UnitType& unit);
 	void setUpUnit(Square *temp ,sf::Texture& texture);
-	bool isInRightTeam(Square *temp);
+	bool isHisTurn(Square *temp);
+	void changeUnitTurn(UnitType& type);
 	Square * findWay(Square * temp, int movement, int iteration, bool val);
+	void nothingTurn(sf::RenderWindow & window, sf::View & view);
+	void chooseDirectionTurn(sf::RenderWindow & window, sf::View & view);
+	void unitUICheck(sf::RenderWindow & window);
+	void moveUnit(Square *location, Square *destination, Unit& unit);
 	BattlegroundScene();
 	~BattlegroundScene();
 };

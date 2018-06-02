@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Unit.h"
+class Unit;
 
 class Square
 	:public sf::Sprite
