@@ -4,7 +4,7 @@ class MenuScene :
 	public Scene
 {
 	InterfaceButton newGame, loadGame, options, exit;
-	sf::Text test;
+	sf::Text test, version;
 public:
 	MenuScene();
 	~MenuScene();

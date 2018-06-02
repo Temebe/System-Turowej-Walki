@@ -304,7 +304,6 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 			for (unsigned int j = 0; j < save.getMapSize(); j++) {
 				window.draw(*temp);
 				if (temp->getUnit() != nullptr) {
-					std::cout << i << " " << j << std::endl;
 					window.draw(*temp->getUnit());
 					window.draw(*temp->getUnit()->getHPBar());
 				}
@@ -330,9 +329,10 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 		if ((mouse.isButtonPressed(sf::Mouse::Left)) && (mouseHold != true))	{
 			temp = first;
 			nullSquare = false;
-			if (unitUI) unitUICheck(window);
+			if (unitUI) unitUICheck(window, view);
 			if (turnType == nothing) nothingTurn(window, view);
 			if (turnType == chooseDirection) chooseDirectionTurn(window, view);
+			if (turnType == chooseTarget) chooseTargetTurn(window, view);
 			mouseHold = true;
 		}
 		if (mouse.isButtonPressed(sf::Mouse::Right)) {
@@ -553,7 +553,8 @@ void BattlegroundScene::changeUnitSelect(UnitType& unit)
 
 void BattlegroundScene::changeUnitTurn(UnitType& type) {
 	if (type == KnightA) {
-		for (int i = 0; knightsA.at(i) != nullptr; i++) {
+		for (int i = 0; i < knightsA.size(); i++) {
+			std::cout << "Knight! " << i << std::endl;
 			if (!knightsA.at(i)->hadTurn()) {
 				return;
 			}
@@ -563,7 +564,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 		selectedUnit.setTexture(knightImB);
 	}
 	if (type == KnightB) {
-		for (int i = 0; knightsB.at(i) != nullptr; i++) {
+		for (int i = 0; i < knightsB.size(); i++) {
 			if (!knightsB.at(i)->hadTurn()) {
 				return;
 			}
@@ -573,7 +574,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 		selectedUnit.setTexture(warriorImA);
 	}
 	if (type == WarriorA) {
-		for (int i = 0; warriorsA.at(i) != nullptr; i++) {
+		for (int i = 0; i < warriorsA.size(); i++) {
 			if (!warriorsA.at(i)->hadTurn()) {
 				return;
 			}
@@ -583,7 +584,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 		selectedUnit.setTexture(warriorImB);
 	}
 	if (type == WarriorB) {
-		for (int i = 0; warriorsB.at(i) != nullptr; i++) {
+		for (int i = 0; i < warriorsB.size(); i++) {
 			if (!warriorsB.at(i)->hadTurn()) {
 				return;
 			}
@@ -593,7 +594,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 		selectedUnit.setTexture(archerImA);
 	}
 	if (type == ArcherA) {
-		for (int i = 0; archersA.at(i) != nullptr; i++) {
+		for (int i = 0; i < archersA.size(); i++) {
 			if (!archersA.at(i)->hadTurn()) {
 				return;
 			}
@@ -603,7 +604,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 		selectedUnit.setTexture(archerImB);
 	}
 	if (type == ArcherB) {
-		for (int i = 0; archersB.at(i) != nullptr; i++) {
+		for (int i = 0; i < archersB.size(); i++) {
 			if (!archersB.at(i)->hadTurn()) {
 				return;
 			}
@@ -613,7 +614,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 		selectedUnit.setTexture(riderImA);
 	}
 	if (type == RiderA) {
-		for (int i = 0; ridersA.at(i) != nullptr; i++) {
+		for (int i = 0; i < ridersA.size(); i++) {
 			if (!ridersA.at(i)->hadTurn()) {
 				return;
 			}
@@ -623,7 +624,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 		selectedUnit.setTexture(riderImB);
 	}
 	if (type == RiderB) {
-		for (int i = 0; ridersB.at(i) != nullptr; i++) {
+		for (int i = 0; i < ridersB.size(); i++) {
 			if (!ridersB.at(i)->hadTurn()) {
 				return;
 			}
@@ -633,7 +634,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 		selectedUnit.setTexture(mageImA);
 	}
 	if (type == MageA) {
-		for (int i = 0; magesA.at(i) != nullptr; i++) {
+		for (int i = 0; i < magesA.size(); i++) {
 			if (!magesA.at(i)->hadTurn()) {
 				return;
 			}
@@ -643,7 +644,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 		selectedUnit.setTexture(mageImB);
 	}
 	if (type == MageB) {
-		for (int i = 0; magesB.at(i) != nullptr; i++) {
+		for (int i = 0; i < magesB.size(); i++) {
 			if (!magesB.at(i)->hadTurn()) {
 				return;
 			}
@@ -651,6 +652,8 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 		type = KnightA;
 		text1.setString("Tura gracza A");
 		selectedUnit.setTexture(knightImA);
+		setNewTurn();
+		changeUnitTurn(unitType);
 	}
 }
 
@@ -699,7 +702,10 @@ Square * BattlegroundScene::findWay(Square * temp, int movement, int iteration, 
 			temp->setTexture(mapTileAble);
 			if (temp->getMovementCost() > iteration) temp->setMovementCost(iteration);
 		}
-		else temp->setTexture(mapTile);
+		else {
+			temp->setTexture(mapTile);
+			temp->setMovementCost(INT_MAX);
+		}
 		temp->setAble(val);
 	}
 	/*if (temp->getUp()->getUnit() == nullptr) {
@@ -707,6 +713,62 @@ Square * BattlegroundScene::findWay(Square * temp, int movement, int iteration, 
 		else temp->setTexture(mapTile);
 		temp->getUp()->setAble(val);
 	}*/
+}
+
+Square * BattlegroundScene::findEnemy(Square * temp, int attackRange, bool val, bool firstIteration)
+{
+	if (temp == nullptr) return nullptr;
+	if (attackRange != 0) {
+		if (temp->getUp() != nullptr) {
+			if (temp->getUp()->getRight() != nullptr) {
+				if ((temp->getUp()->getRight()->getUnit() != nullptr) || (!val)) {
+					findEnemy(temp->getUp()->getRight(), attackRange - 1, val, false);
+				}
+			}
+			if (temp->getUp()->getLeft() != nullptr) {
+				if ((temp->getUp()->getLeft()->getUnit() != nullptr) || (!val)) {
+					findEnemy(temp->getUp()->getLeft(), attackRange - 1, val, false);
+				}
+			}
+			if ((temp->getUp()->getUnit() != nullptr) || (!val)) {
+				findEnemy(temp->getUp(), attackRange - 1, val, false);
+			}
+		}
+		if (temp->getDown() != nullptr) {
+			if (temp->getDown()->getRight() != nullptr) {
+				if ((temp->getDown()->getRight()->getUnit() != nullptr) || (!val)) {
+					findEnemy(temp->getDown()->getRight(), attackRange - 1, val, false);
+				}
+			}
+			if (temp->getDown()->getLeft() != nullptr) {
+				if ((temp->getDown()->getLeft()->getUnit() != nullptr) || (!val)) {
+					findEnemy(temp->getDown()->getLeft(), attackRange - 1, val, false);
+				}
+			}
+			if ((temp->getDown()->getUnit() != nullptr) || (!val)) {
+				findEnemy(temp->getDown(), attackRange - 1, val, false);
+			}
+		}
+		if (temp->getLeft() != nullptr) {
+			if ((temp->getLeft()->getUnit() != nullptr) || (!val)) {
+				findEnemy(temp->getLeft(), attackRange - 1, val, false);
+			}
+		}
+		if (temp->getRight() != nullptr) {
+			if ((temp->getRight()->getUnit() != nullptr) || (!val)) {
+				findEnemy(temp->getRight(), attackRange - 1, val, false);
+			}
+		}
+	}
+	if (!firstIteration) {
+		if (val) {
+			temp->setTexture(mapTileAble);
+		}
+		else {
+			temp->setTexture(mapTile);
+		}
+		if(temp->getUnit() != nullptr) temp->getUnit()->setPropTarget(val);
+	}
 }
 
 void BattlegroundScene::nothingTurn(sf::RenderWindow& window, sf::View& view)
@@ -787,34 +849,23 @@ void BattlegroundScene::chooseDirectionTurn(sf::RenderWindow & window, sf::View 
 		}
 		temp = temp->getDown();
 	}
-	if(actual != nullptr) std::cout << actual->getPosition().x << " " << actual->getPosition().y << std::endl;
-	std::cout << temp->getPosition().x << " " << temp->getPosition().y << std::endl;
 	if (!nullSquare) {
 		if (actual == temp) { //cancellation of choosing path
-			std::cout << "WTF" << std::endl;
 			temp->touch();
 			temp->setTexture(mapTile);
 			findWay(actual, actual->getUnit()->getTempMovement(), 0, false);
-			//actual = nullptr;
-			//actual->setTexture(mapTile);
 		}
 		else {
 			if (temp->getUnit() == nullptr) {
-				std::cout << "WTF2" << std::endl;
 				moveUnit(actual, temp, *actual->getUnit());
 				findWay(actual, temp->getUnit()->getTempMovement()+temp->getMovementCost(), 0, false);
-				//actual = nullptr;
-				//actual->setTexture(mapTile);
 			}
 			else {
-				std::cout << "WTF3" << std::endl;
 				temp->touch();
 				temp->setTexture(mapTileTouched);
 				actual->touch();
 				actual->setTexture(mapTile);
 				findWay(actual, actual->getUnit()->getTempMovement(), 0, false);
-				//actual = nullptr;
-				//actual->setTexture(mapTile);
 			}
 		}
 		actual->setTexture(mapTile);
@@ -823,15 +874,91 @@ void BattlegroundScene::chooseDirectionTurn(sf::RenderWindow & window, sf::View 
 	}
 }
 
-void BattlegroundScene::unitUICheck(sf::RenderWindow & window)
+void BattlegroundScene::chooseTargetTurn(sf::RenderWindow & window, sf::View & view)
+{
+	std::cout << "TU jestem!" << std::endl;
+	for (int i = 0; i < (int)((mouse.getPosition(window).x + view.getCenter().x - 512) / 64); i++) {
+		if (temp->getRight() == nullptr) {
+			nullSquare = true;
+			break;
+		}
+		temp = temp->getRight();
+	}
+	for (int i = 0; i < (int)((mouse.getPosition(window).y + view.getCenter().y - 400) / 64); i++) {
+		if ((temp->getDown() == nullptr) || (nullSquare)) {
+			nullSquare = true;
+			break;
+		}
+		temp = temp->getDown();
+	}
+	if (!nullSquare) {
+		if (temp->getUnit() != nullptr) {
+			if (temp->getUnit()->isPropTarget()) {
+				actual->getUnit()->attack(temp->getUnit());
+			}
+		}
+		findEnemy(actual, actual->getUnit()->getAttackRange(), false, true);
+		actual->setTexture(mapTile);
+		actual = nullptr;
+		turnType = nothing;
+	}
+}
+
+void BattlegroundScene::setNewTurn()
+{
+	for (int i = 0; i < knightsA.size(); i++) {
+		knightsA.at(i)->setTurn(false);
+		knightsA.at(i)->resetMovement();
+	}
+	for (int i = 0; i < knightsB.size(); i++) {
+		knightsB.at(i)->setTurn(false);
+		knightsB.at(i)->resetMovement();
+	}
+	for (int i = 0; i < warriorsA.size(); i++) {
+		warriorsA.at(i)->setTurn(false);
+		warriorsA.at(i)->resetMovement();
+	}
+	for (int i = 0; i < warriorsB.size(); i++) {
+		warriorsB.at(i)->setTurn(false);
+		warriorsB.at(i)->resetMovement();
+	}
+	for (int i = 0; i < archersA.size(); i++) {
+		archersA.at(i)->setTurn(false);
+		archersA.at(i)->resetMovement();
+	}
+	for (int i = 0; i < archersB.size(); i++) {
+		archersB.at(i)->setTurn(false);
+		archersB.at(i)->resetMovement();
+	}
+	for (int i = 0; i < magesA.size(); i++) {
+		magesA.at(i)->setTurn(false);
+		magesA.at(i)->resetMovement();
+	}
+	for (int i = 0; i < magesB.size(); i++) {
+		magesB.at(i)->setTurn(false);
+		magesB.at(i)->resetMovement();
+	}
+}
+
+void BattlegroundScene::unitUICheck(sf::RenderWindow & window, sf::View& view)
 {
 	if (fight.isMouseOver(mouse, window)) {
+		if (actual->getUnit()->canAttack()) {
+			findEnemy(actual, actual->getUnit()->getAttackRange(), true, true);
+			turnType = chooseTarget;
+		}
+		else {
+			std::cout << "nope" << std::endl;
+		}
 	}
-	else if (move.isMouseOver(mouse, window)) {
+	else if (move.isMouseOver(mouse, window, view)) {
 		findWay(actual, actual->getUnit()->getTempMovement(), 0, true);
 		turnType = chooseDirection;
 	}
-	else if (idle.isMouseOver(mouse, window)) {
+	else if (idle.isMouseOver(mouse, window, view)) {
+		actual->getUnit()->setTurn(true);
+		changeUnitTurn(unitType);
+		turnType = nothing;
 	}
 	unitUI = false;
 	nullSquare = true;

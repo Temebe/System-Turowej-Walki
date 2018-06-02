@@ -17,7 +17,7 @@ public:
 	void setUp(Square *temp);
 	void setDown(Square *temp);
 	void setAble(bool& temp);
-	void setMovementCost(int& value);
+	void setMovementCost(int value);
 	int getMovementCost();
 	bool isAbleToMove();
 	bool isTouched();

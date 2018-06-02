@@ -8,6 +8,9 @@ MenuScene::MenuScene()
 	test.setString("TYTUL GRY");
 	test.setFillColor(sf::Color::Red);
 	test.setPosition(200, 200);
+	version.setFont(font);
+	version.setString("alpha 1.0");
+	version.setPosition(900, 750);
 	newGame.setTextureImage("include/buttons/newgame.png");
 	newGame.setPosition(310, 300);
 	loadGame.setTextureImage("include/buttons/loadgame.png");
@@ -31,6 +34,7 @@ int MenuScene::render(sf::RenderWindow& window)
 		window.draw(options);
 		window.draw(exit);
 		window.draw(test);
+		window.draw(version);
 		window.pollEvent(event);
 		if (event.type == sf::Event::Closed) {
 			window.close();

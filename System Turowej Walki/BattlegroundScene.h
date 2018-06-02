@@ -40,9 +40,12 @@ public:
 	bool isHisTurn(Square *temp);
 	void changeUnitTurn(UnitType& type);
 	Square * findWay(Square * temp, int movement, int iteration, bool val);
+	Square * findEnemy(Square *temp, int attackRange, bool val, bool firstIteration);
 	void nothingTurn(sf::RenderWindow & window, sf::View & view);
 	void chooseDirectionTurn(sf::RenderWindow & window, sf::View & view);
-	void unitUICheck(sf::RenderWindow & window);
+	void chooseTargetTurn(sf::RenderWindow & window, sf::View & view);
+	void setNewTurn();
+	void unitUICheck(sf::RenderWindow & window, sf::View & view);
 	void moveUnit(Square *location, Square *destination, Unit& unit);
 	BattlegroundScene();
 	~BattlegroundScene();

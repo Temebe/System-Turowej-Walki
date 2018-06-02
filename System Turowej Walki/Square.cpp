@@ -30,7 +30,7 @@ void Square::setAble(bool & temp)
 	ableToMove = temp;
 }
 
-void Square::setMovementCost(int & value)
+void Square::setMovementCost(int value)
 {
 	movementCost = value;
 }
@@ -97,7 +97,7 @@ Square::Square()
 	down = nullptr;
 	occupyingUnit = nullptr;
 	touched = false;
-	movementCost = _MAX_INT_DIG;
+	movementCost = INT_MAX;
 }
 
 

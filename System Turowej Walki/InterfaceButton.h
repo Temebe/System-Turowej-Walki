@@ -11,5 +11,6 @@ public:
 	virtual ~InterfaceButton();
 	void setTextureImage(std::string path);
 	bool isMouseOver(sf::Mouse& mouse, sf::RenderWindow& window);
+	bool isMouseOver(sf::Mouse& mouse, sf::RenderWindow& window, sf::View& view);
 };
 
