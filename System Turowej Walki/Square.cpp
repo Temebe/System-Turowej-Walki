@@ -58,6 +58,7 @@ void Square::touch()
 void Square::putUnit(Unit * unit)
 {
 	occupyingUnit = unit;
+	if(unit != nullptr) unit->setParentSquare(this);
 }
 
 Unit *Square::getUnit()

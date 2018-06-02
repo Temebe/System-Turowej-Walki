@@ -140,7 +140,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 					if (actual == temp) {
 						switch (unitType) {
 						case KnightA:
-							temp->putUnit(new Knight(true)); // true for A team
+							temp->putUnit(new Knight(true, &knightsA)); // true for A team
 							temp->getUnit()->setType(KnightA);
 							knightsA.push_back(temp->getUnit());
 							setUpUnit(temp, knightImA);
@@ -149,7 +149,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(KnA));
 							break;
 						case WarriorA:
-							temp->putUnit(new Warrior(true));
+							temp->putUnit(new Warrior(true, &warriorsA));
 							temp->getUnit()->setType(WarriorA);
 							warriorsA.push_back(temp->getUnit());
 							setUpUnit(temp, warriorImA);
@@ -158,7 +158,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(WaA));
 							break;
 						case ArcherA:
-							temp->putUnit(new Archer(true));
+							temp->putUnit(new Archer(true, &archersA));
 							temp->getUnit()->setType(ArcherA);
 							archersA.push_back(temp->getUnit());
 							setUpUnit(temp, archerImA);
@@ -167,7 +167,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(ArA));
 							break;
 						case RiderA:
-							temp->putUnit(new Rider(true));
+							temp->putUnit(new Rider(true, &ridersA));
 							temp->getUnit()->setType(RiderA);
 							ridersA.push_back(temp->getUnit());
 							setUpUnit(temp, riderImA);
@@ -176,7 +176,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(RiA));
 							break;
 						case MageA:
-							temp->putUnit(new Mage(true));
+							temp->putUnit(new Mage(true, &magesA));
 							temp->getUnit()->setType(MageA);
 							magesA.push_back(temp->getUnit());
 							setUpUnit(temp, mageImA);
@@ -185,7 +185,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(MaA));
 							break;
 						case KnightB:
-							temp->putUnit(new Knight(false)); // false for B team
+							temp->putUnit(new Knight(false, &knightsB)); // false for B team
 							temp->getUnit()->setType(KnightB);
 							knightsB.push_back(temp->getUnit());
 							setUpUnit(temp, knightImB);
@@ -194,7 +194,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(KnB));
 							break;
 						case WarriorB:
-							temp->putUnit(new Warrior(false));
+							temp->putUnit(new Warrior(false, &warriorsB));
 							temp->getUnit()->setType(WarriorB);
 							warriorsB.push_back(temp->getUnit());
 							setUpUnit(temp, warriorImB);
@@ -203,7 +203,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(WaB));
 							break;
 						case ArcherB:
-							temp->putUnit(new Archer(false));
+							temp->putUnit(new Archer(false, &archersB));
 							temp->getUnit()->setType(ArcherB);
 							archersB.push_back(temp->getUnit());
 							setUpUnit(temp, archerImB);
@@ -212,7 +212,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(ArB));
 							break;
 						case RiderB:
-							temp->putUnit(new Rider(false));
+							temp->putUnit(new Rider(false, &ridersB));
 							temp->getUnit()->setType(RiderB);
 							ridersB.push_back(temp->getUnit());
 							setUpUnit(temp, riderImB);
@@ -221,7 +221,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 							else text2.setString(std::to_string(RiB));
 							break;
 						case MageB:
-							temp->putUnit(new Mage(false));
+							temp->putUnit(new Mage(false, &magesB));
 							temp->getUnit()->setType(MageB);
 							magesB.push_back(temp->getUnit());
 							setUpUnit(temp, mageImB);
@@ -327,6 +327,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 			window.draw(idle);
 		}
 		if (event.type == sf::Event::KeyPressed) {
+			if (unitUI)unitUICheck(event);
 			if (event.key.code == sf::Keyboard::X) {
 				if (turnType == chooseDirection) {
 					findWay(actual, actual->getUnit()->getTempMovement(), 0, false);
@@ -346,7 +347,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 				return 5;
 			}
 		}
-		if ((mouse.isButtonPressed(sf::Mouse::Left)) && (mouseHold != true))	{
+		if ((mouse.isButtonPressed(sf::Mouse::Left)) && (mouseHold != true)) {
 			temp = first;
 			nullSquare = false;
 			if (unitUI) unitUICheck(window, view);
@@ -679,6 +680,7 @@ void BattlegroundScene::setUpUnit(Square *temp, sf::Texture & texture)
 	temp->getUnit()->setScale(0.5, 0.5);
 	temp->getUnit()->setHPBar(new sf::Sprite); //something is not yes
 	temp->getUnit()->setHPBarTexture(hpbarIm);
+	temp->getUnit()->getHPBar()->setScale(1, 0.4);
 	temp->getUnit()->getHPBar()->setPosition(temp->getUnit()->getPosition().x, (double)temp->getUnit()->getPosition().y + ((double)temp->getUnit()->getTexture()->getSize().y * 0.75 * 0.5));
 }
 
@@ -842,12 +844,10 @@ void BattlegroundScene::nothingTurn(sf::RenderWindow& window, sf::View& view)
 		}	
 		temp = temp->getDown();
 	}
-
 	if (!nullSquare) {
 		if (actual == nullptr) {
 			if (temp != nullptr) {
 				if ((temp->getUnit() != nullptr) && (isHisTurn(temp))) {
-					std::cout << "unitUI = true" << std::endl;
 					unitUI = true;
 					actual = temp;
 					temp->touch();
@@ -857,7 +857,6 @@ void BattlegroundScene::nothingTurn(sf::RenderWindow& window, sf::View& view)
 		}
 		else {
 			if (actual == temp) {
-				std::cout << "unitUI = false" << std::endl;
 				unitUI = false;
 				temp->touch();
 				temp->setTexture(mapTile);
@@ -911,7 +910,7 @@ void BattlegroundScene::chooseDirectionTurn(sf::RenderWindow & window, sf::View 
 			findWay(actual, actual->getUnit()->getTempMovement(), 0, false);
 		}
 		else {
-			if (temp->getUnit() == nullptr) {
+			if (temp->getUnit() == nullptr) { //choosing direction
 				if (temp->isAbleToMove()) {
 					moveUnit(actual, temp, *actual->getUnit());
 					findWay(actual, temp->getUnit()->getTempMovement() + temp->getMovementCost(), 0, false);
@@ -996,6 +995,8 @@ void BattlegroundScene::unitUICheck(sf::RenderWindow & window, sf::View& view)
 		if (actual->getUnit()->canAttack()) {
 			findEnemy(actual, actual->getUnit()->getAttackRange(), true, true);
 			turnType = chooseTarget;
+			unitUI = false;
+			nullSquare = true;
 		}
 		else {
 			std::cout << "nope" << std::endl;
@@ -1006,6 +1007,8 @@ void BattlegroundScene::unitUICheck(sf::RenderWindow & window, sf::View& view)
 		if (actual->getUnit()->isMovable()) {
 			findWay(actual, actual->getUnit()->getTempMovement(), 0, true);
 			turnType = chooseDirection;
+			unitUI = false;
+			nullSquare = true;
 		}
 		else {
 			std::cout << "nope" << std::endl;
@@ -1015,9 +1018,47 @@ void BattlegroundScene::unitUICheck(sf::RenderWindow & window, sf::View& view)
 		actual->getUnit()->setTurn(true);
 		changeUnitTurn(unitType);
 		turnType = nothing;
+		unitUI = false;
+		nullSquare = true;
+		actual->setTexture(mapTile);
+		actual = nullptr;
 	}
-	unitUI = false;
-	nullSquare = true;
+}
+
+void BattlegroundScene::unitUICheck(sf::Event & event)
+{
+	if (event.key.code == sf::Keyboard::S) {
+		if (actual->getUnit()->canAttack()) {
+			findEnemy(actual, actual->getUnit()->getAttackRange(), true, true);
+			turnType = chooseTarget;
+			unitUI = false;
+			nullSquare = true;
+		}
+		else {
+			std::cout << "nope" << std::endl;
+			//Add info to player
+		}
+	}
+	else if (event.key.code == sf::Keyboard::A) {
+		if (actual->getUnit()->isMovable()) {
+			findWay(actual, actual->getUnit()->getTempMovement(), 0, true);
+			turnType = chooseDirection;
+			unitUI = false;
+			nullSquare = true;
+		}
+		else {
+			std::cout << "nope" << std::endl;
+		}
+	}
+	else if (event.key.code == sf::Keyboard::D) {
+		actual->getUnit()->setTurn(true);
+		changeUnitTurn(unitType);
+		turnType = nothing;
+		unitUI = false;
+		nullSquare = true;
+		actual->setTexture(mapTile);
+		actual = nullptr;
+	}
 }
 
 void BattlegroundScene::moveUnit(Square * location, Square * destination, Unit& unit)

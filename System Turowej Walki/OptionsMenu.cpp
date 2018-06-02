@@ -37,11 +37,11 @@ int OptionsMenu::render(sf::RenderWindow& window, sf::Music& music)
 			mouseHold = true;
 			if (volUp.isMouseOver(mouse, window)) {
 				music.setVolume(round(music.getVolume() + 1));
-				volText.setString(std::to_string(music.getVolume()));
+				volText.setString(std::to_string((int) music.getVolume()));
 			}
 			if (volDn.isMouseOver(mouse, window)) {
 				music.setVolume(round(music.getVolume() - 1));
-				volText.setString(std::to_string(music.getVolume()));
+				volText.setString(std::to_string((int) music.getVolume()));
 			}
 			if (returnButton.isMouseOver(mouse, window)) return 0;
 		}

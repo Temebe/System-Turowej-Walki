@@ -5,6 +5,7 @@
 
 Unit::Unit()
 {
+
 }
 
 Unit::Unit(bool choice)
@@ -102,16 +103,21 @@ void Unit::takeDmg(double amount)
 	std::cout << "Hit! Hp left: " << hp << std::endl;
 	if (hp <= 0) {
 		std::cout << "Died" << std::endl;
-		this->getHPBar()->setScale((float)0, 1);
+		delete this;
 	}
 	else {
-		this->getHPBar()->setScale((float)hp / maxHp, 1);
+		this->getHPBar()->setScale((float)hp / maxHp, 0.4);
 	}
 }
 
 void Unit::setPropTarget(bool val)
 {
 	propTarget = val;
+}
+
+void Unit::setParentSquare(Square * parent)
+{
+	parentSquare = parent;
 }
 
 bool Unit::isPropTarget()
@@ -122,6 +128,7 @@ bool Unit::isPropTarget()
 
 Unit::~Unit()
 {
+	std::cout << "KUKU" << std::endl;
 }
 
 /*void Unit::move(Square *location, Square *destination)
@@ -149,7 +156,7 @@ Knight::Knight()
 
 }
 
-Knight::Knight(bool choice)
+Knight::Knight(bool choice, std::vector<Unit*> *parent)
 {
 	team = choice;
 	maxHp = 15;
@@ -160,6 +167,7 @@ Knight::Knight(bool choice)
 	turn = false;
 	movable = true;
 	std::cout << "Knight! " << tempMovement << std::endl;
+	parentVector = parent;
 }
 
 void Knight::attack(Square *target)
@@ -170,7 +178,9 @@ void Knight::attack(Square *target)
 
 Knight::~Knight()
 {
-
+	parentVector->erase(std::remove(parentVector->begin(), parentVector->end(), this), parentVector->end());
+	delete hpBar;
+	parentSquare->putUnit(nullptr);
 }
 
 /*void Knight::findEnemy(Square * location, sf::Texture & mapTileAble, sf::Texture & mapTile, bool val)
@@ -183,7 +193,7 @@ Warrior::Warrior()
 
 }
 
-Warrior::Warrior(bool choice)
+Warrior::Warrior(bool choice, std::vector<Unit*> *parent)
 {
 	team = choice;
 	maxHp = 10;
@@ -193,6 +203,7 @@ Warrior::Warrior(bool choice)
 	attackRange = 1;
 	turn = false;
 	movable = true;
+	parentVector = parent;
 }
 
 void Warrior::attack(Square *target)
@@ -203,7 +214,9 @@ void Warrior::attack(Square *target)
 
 Warrior::~Warrior()
 {
-
+	parentVector->erase(std::remove(parentVector->begin(), parentVector->end(), this), parentVector->end());
+	delete hpBar;
+	parentSquare->putUnit(nullptr);
 }
 
 Mage::Mage()
@@ -211,7 +224,7 @@ Mage::Mage()
 
 }
 
-Mage::Mage(bool choice)
+Mage::Mage(bool choice, std::vector<Unit*> *parent)
 {
 	team = choice;
 	maxHp = 8;
@@ -221,6 +234,7 @@ Mage::Mage(bool choice)
 	attackRange = 2;
 	turn = false;
 	movable = true;
+	parentVector = parent;
 }
 
 void Mage::attack(Square *target)
@@ -247,7 +261,9 @@ void Mage::attack(Square *target)
 
 Mage::~Mage()
 {
-
+	parentVector->erase(std::remove(parentVector->begin(), parentVector->end(), this), parentVector->end());
+	delete hpBar;
+	parentSquare->putUnit(nullptr);
 }
 
 Archer::Archer()
@@ -255,7 +271,7 @@ Archer::Archer()
 
 }
 
-Archer::Archer(bool choice)
+Archer::Archer(bool choice, std::vector<Unit*> *parent)
 {
 	team = choice;
 	maxHp = 8;
@@ -265,17 +281,20 @@ Archer::Archer(bool choice)
 	attackRange = 3;
 	turn = false;
 	movable = true;
+	parentVector = parent;
 }
 
 void Archer::attack(Square *target)
 {
 	target->getUnit()->takeDmg(1.5);
-
+	this->hasAttacked = true;
 }
 
 Archer::~Archer()
 {
-
+	parentVector->erase(std::remove(parentVector->begin(), parentVector->end(), this), parentVector->end());
+	delete hpBar;
+	parentSquare->putUnit(nullptr);
 }
 
 Rider::Rider()
@@ -283,7 +302,7 @@ Rider::Rider()
 
 }
 
-Rider::Rider(bool choice)
+Rider::Rider(bool choice, std::vector<Unit*> *parent)
 {
 	team = choice;
 	maxHp = 12;
@@ -293,16 +312,20 @@ Rider::Rider(bool choice)
 	attackRange = 1;
 	turn = false;
 	movable = true;
+	parentVector = parent;
 }
 
 void Rider::attack(Square *target)
 {
-
+	target->getUnit()->takeDmg((movement - tempMovement)*1.5);
+	this->hasAttacked = true;
 }
 
 Rider::~Rider()
 {
-
+	parentVector->erase(std::remove(parentVector->begin(), parentVector->end(), this), parentVector->end());
+	delete hpBar;
+	parentSquare->putUnit(nullptr);
 }
 
 

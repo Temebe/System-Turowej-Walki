@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include "Square.h"
+#include <vector>
 class Square;
 
 class Unit
@@ -8,6 +9,8 @@ class Unit
 {
 private:
 protected:
+	std::vector<Unit*> *parentVector;
+	Square *parentSquare;
 	bool team; // true -> A team, false -> B team;
 	bool turn, hasAttacked, propTarget, movable;
 	int maxHp, movement, tempMovement, attackRange; //hp -> health points
@@ -35,6 +38,7 @@ public:
 	void setTurn(bool val);
 	void takeDmg(double amount);
 	void setPropTarget(bool val);
+	void setParentSquare(Square *parent);
 	bool isPropTarget();
 	virtual ~Unit();
 	virtual void attack(Square *target) = 0;
@@ -48,7 +52,7 @@ class Knight
 {
 public:
 	Knight();
-	Knight(bool choice);
+	Knight(bool choice, std::vector<Unit*> *parent);
 	void attack(Square *target);
 	~Knight();
 	//void findEnemy(Square *location, sf::Texture& mapTileAble, sf::Texture &mapTile, bool val);
@@ -58,7 +62,7 @@ class Warrior
 	:public Unit
 {
 public:
-	Warrior(bool choice);
+	Warrior(bool choice, std::vector<Unit*> *parent);
 	void attack(Square *target);
 	Warrior();
 	~Warrior();
@@ -68,7 +72,7 @@ class Archer
 	:public Unit
 {
 public:
-	Archer(bool choice);
+	Archer(bool choice, std::vector<Unit*> *parent);
 	void attack(Square *target);
 	Archer();
 	~Archer();
@@ -78,7 +82,7 @@ class Mage
 	:public Unit
 {
 public:
-	Mage(bool choice);
+	Mage(bool choice, std::vector<Unit*> *parent);
 	void attack(Square *target);
 	Mage();
 	~Mage();
@@ -88,7 +92,7 @@ class Rider
 	:public Unit
 {
 public:
-	Rider(bool choice);
+	Rider(bool choice, std::vector<Unit*> *parent);
 	void attack(Square *target);
 	Rider();
 	~Rider();

@@ -12,7 +12,7 @@ class BattlegroundScene :
 	std::vector <Unit*> archersA, archersB;
 	std::vector <Unit*> magesA, magesB;
 	std::vector <Unit*> ridersA, ridersB;
-	bool mouseHold, nullSquare, holding;
+	bool mouseHold, nullSquare, holding, unitUIClicked;
 	bool selectingMode, teamASelecting, unitUI;
 	Square *first, *temp, *prev, *actual;
 	sf::IntRect intRect;
@@ -46,6 +46,7 @@ public:
 	void chooseTargetTurn(sf::RenderWindow & window, sf::View & view);
 	void setNewTurn();
 	void unitUICheck(sf::RenderWindow & window, sf::View & view);
+	void unitUICheck(sf::Event& event);
 	void moveUnit(Square *location, Square *destination, Unit& unit);
 	BattlegroundScene();
 	~BattlegroundScene();
