@@ -24,14 +24,18 @@ public:
 	void lossTempMovement(int value);
 	int getTempMovement();
 	void setType(int value);
+	void setTempMovement(int value);
+	void setHp(double value);
 	int getType();
 	void setHPBarTexture(sf::Texture& texture);
 	void setHPBar(sf::Sprite *bar);
+	void setAttackAbility(bool val);
 	int getAttackRange();
 	sf::Sprite *getHPBar();
 	bool isTeamA();
 	bool hadTurn();
 	bool canAttack();
+	double getHp();
 	void setMovable(bool val);
 	bool isMovable();
 	void prepareForTurn();

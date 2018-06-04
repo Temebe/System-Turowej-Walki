@@ -206,6 +206,7 @@ int SelectScene::render(sf::RenderWindow& window, Save& save)
 				save.setTeamA(va1, va3, va2, va5, va4);
 				save.setTeamB(vb1, vb3, vb2, vb5, vb4);
 				save.setMapSize(mapSize);
+				save.setLoadingMode(false);
 				return 4;
 			}
 		}

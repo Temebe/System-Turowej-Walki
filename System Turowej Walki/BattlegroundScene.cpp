@@ -4,83 +4,11 @@
 
 int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& view)
 {
-	mouseHold = false;
-	//test
-	//teamA = save.getTeamA();
-	//teamB = save.getTeamB();
-	/*std::cout << "Knights from team A: " << save.getTeamA().at(0) << std::endl;
-	std::cout << "Warriors from team A: " << save.getTeamA().at(1) << std::endl;
-	std::cout << "Archers from team A: " << save.getTeamA().at(2) << std::endl;
-	std::cout << "Riders from team A: " << save.getTeamA().at(3) << std::endl;
-	std::cout << "Mages from team A: " << save.getTeamA().at(4) << std::endl;
-	std::cout << "Knights from team B: " << save.getTeamB().at(0) << std::endl;
-	std::cout << "Warriors from team B: " << save.getTeamB().at(1) << std::endl;
-	std::cout << "Archers from team B: " << save.getTeamB().at(2) << std::endl;
-	std::cout << "Riders from team B: " << save.getTeamB().at(3) << std::endl;
-	std::cout << "Mages from team B: " << save.getTeamB().at(4) << std::endl;*/
+	if (save.isLoadingMode()) loadGameAction(save);
+	else setUpNewMap(save); //making map NxN
+	selectingMode = save.isSelectingMode();
 
-	//Tworzenie  planszy NxN
-	for (unsigned int i = 0; i < save.getMapSize(); i++) {
-		for (unsigned int j = 0; j < save.getMapSize(); j++) {
-			if ((i == 0) && (j == 0)) {
-				first = new Square;
-				first->setTexture(mapTile);
-				first->setPosition(0, 0);
-			}
-			else if ((i == 0) && (j == 1)){
-				prev = new Square;
-				prev->setTexture(mapTile);
-				prev->setPosition(64, 0);
-				first->setRight(prev);
-				prev->setLeft(first);
-			}
-			else if ((i == 0) && (j > 1)) {
-				temp = new Square;
-				temp->setTexture(mapTile);
-				temp->setPosition((float)j*64, 0);
-				temp->setLeft(prev);
-				prev->setRight(temp);
-				prev = temp;
-			}
-			else if ((i > 0) && (j == 0)) {
-				prev = new Square;
-				prev->setTexture(mapTile);
-				prev->setPosition((float)j * 64, (float)i * 64);
-				temp = first;
-				for (unsigned int k = 1; k < i; k++) {
-					temp = temp->getDown();
-				}
-				temp->setDown(prev);
-				prev->setUp(temp);
-			}
-			else {
-				temp = new Square;
-				temp->setTexture(mapTile);
-				temp->setPosition((float)j * 64, (float)i * 64);
-				temp->setLeft(prev);
-				prev->setRight(temp);
-				temp->setUp(prev->getUp()->getRight());
-				temp->getUp()->setDown(temp);
-				prev = temp;
-			}
-		}
-	}
-	temp = nullptr;
-	prev = nullptr;
-	KnA = save.getTeamA().at(0);
-	WaA = save.getTeamA().at(1);
-	ArA = save.getTeamA().at(2);
-	RiA = save.getTeamA().at(3);
-	MaA = save.getTeamA().at(4);
-	KnB = save.getTeamB().at(0);
-	WaB = save.getTeamB().at(1);
-	ArB = save.getTeamB().at(2);
-	RiB = save.getTeamB().at(3);
-	MaB = save.getTeamB().at(4);
-	changeUnitSelect(unitType);
-	//LOOP FOR PLACING TEAMS
-
-	while (selectingMode) {
+	while (selectingMode) { //loop for placing units on map
 		window.clear(sf::Color::Black);
 		window.pollEvent(event);
 		temp = first;
@@ -97,6 +25,12 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 				temp = temp->getDown();
 			}
 		}
+		if (menuOpened) {
+			exit.setPosition(view.getCenter().x - 75, view.getCenter().y - 50);
+			savegame.setPosition(view.getCenter().x - 75, view.getCenter().y + 50);
+			window.draw(exit);
+			window.draw(savegame);
+		}
 		text1.setPosition(view.getCenter().x, view.getCenter().y + 300);
 		text2.setPosition(view.getCenter().x + 200, view.getCenter().y + 250);
 		selectedUnit.setPosition(view.getCenter().x + 384, view.getCenter().y + 272);
@@ -106,165 +40,17 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 		if ((mouse.isButtonPressed(sf::Mouse::Left)) && (mouseHold != true)) {
 			temp = first;
 			nullSquare = false;
-			clickedPos.x = 1;
-			for (int i = 0; i < (int)((mouse.getPosition(window).x + view.getCenter().x - 512) / 64); i++) {
-				if (temp->getRight() == nullptr) {
+			mapClickedPosition(window, view, clickedPosX);
+			if (menuOpened) {
+				if (exit.isMouseOver(mouse, window, view)) return 5;
+				if (savegame.isMouseOver(mouse, window, view)) {
+					//saveGameAction(save);
+					menuOpened = false;
 					nullSquare = true;
-					break;
 				}
-				clickedPos.x = clickedPos.x + 1;
-				temp = temp->getRight();
-			}
-			for (int i = 0; i < (int)((mouse.getPosition(window).y + view.getCenter().y - 400) / 64); i++) {
-				if ((temp->getDown() == nullptr) || (nullSquare)) {
-					nullSquare = true;
-					break;
-				}
-				temp = temp->getDown();
 			}
 			if (!nullSquare) {
-				if (actual == nullptr) {
-					if (temp != nullptr) {
-						if ((teamASelecting) && (clickedPos.x > save.getMapSize() / 2)) {
-						}
-						else if ((!teamASelecting) && (clickedPos.x <= (save.getMapSize() + 1) / 2)) {
-						}
-						else if (temp->getUnit() == nullptr) {
-							actual = temp;
-							temp->touch();
-							temp->setTexture(mapTileTouched);
-						}
-					}
-				}
-				else {
-					if (actual == temp) {
-						switch (unitType) {
-						case KnightA:
-							temp->putUnit(new Knight(true, &knightsA)); // true for A team
-							temp->getUnit()->setType(KnightA);
-							knightsA.push_back(temp->getUnit());
-							setUpUnit(temp, knightImA);
-							KnA--;
-							if (KnA == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(KnA));
-							break;
-						case WarriorA:
-							temp->putUnit(new Warrior(true, &warriorsA));
-							temp->getUnit()->setType(WarriorA);
-							warriorsA.push_back(temp->getUnit());
-							setUpUnit(temp, warriorImA);
-							WaA--;
-							if (WaA == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(WaA));
-							break;
-						case ArcherA:
-							temp->putUnit(new Archer(true, &archersA));
-							temp->getUnit()->setType(ArcherA);
-							archersA.push_back(temp->getUnit());
-							setUpUnit(temp, archerImA);
-							ArA--;
-							if (ArA == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(ArA));
-							break;
-						case RiderA:
-							temp->putUnit(new Rider(true, &ridersA));
-							temp->getUnit()->setType(RiderA);
-							ridersA.push_back(temp->getUnit());
-							setUpUnit(temp, riderImA);
-							RiA--;
-							if (RiA == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(RiA));
-							break;
-						case MageA:
-							temp->putUnit(new Mage(true, &magesA));
-							temp->getUnit()->setType(MageA);
-							magesA.push_back(temp->getUnit());
-							setUpUnit(temp, mageImA);
-							MaA--;
-							if (MaA == 0) changeTeamSelect();
-							else text2.setString(std::to_string(MaA));
-							break;
-						case KnightB:
-							temp->putUnit(new Knight(false, &knightsB)); // false for B team
-							temp->getUnit()->setType(KnightB);
-							knightsB.push_back(temp->getUnit());
-							setUpUnit(temp, knightImB);
-							KnB--;
-							if (KnB == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(KnB));
-							break;
-						case WarriorB:
-							temp->putUnit(new Warrior(false, &warriorsB));
-							temp->getUnit()->setType(WarriorB);
-							warriorsB.push_back(temp->getUnit());
-							setUpUnit(temp, warriorImB);
-							WaB--;
-							if (WaB == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(WaB));
-							break;
-						case ArcherB:
-							temp->putUnit(new Archer(false, &archersB));
-							temp->getUnit()->setType(ArcherB);
-							archersB.push_back(temp->getUnit());
-							setUpUnit(temp, archerImB);
-							ArB--;
-							if (ArB == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(ArB));
-							break;
-						case RiderB:
-							temp->putUnit(new Rider(false, &ridersB));
-							temp->getUnit()->setType(RiderB);
-							ridersB.push_back(temp->getUnit());
-							setUpUnit(temp, riderImB);
-							RiB--;
-							if (RiB == 0) changeUnitSelect(unitType);
-							else text2.setString(std::to_string(RiB));
-							break;
-						case MageB:
-							temp->putUnit(new Mage(false, &magesB));
-							temp->getUnit()->setType(MageB);
-							magesB.push_back(temp->getUnit());
-							setUpUnit(temp, mageImB);
-							MaB--;
-							if (MaB == 0) changeTeamSelect();
-							else text2.setString(std::to_string(MaB));
-							break;
-						}
-						temp->touch();
-						temp->setTexture(mapTile);
-						actual = nullptr;
-					}
-					else {
-						if (temp->getUnit() != nullptr) {
-							actual->touch();
-							actual->setTexture(mapTile);
-							actual = nullptr;
-						}
-						else {
-							if (temp != nullptr) {
-								if ((teamASelecting) && (clickedPos.x > save.getMapSize() / 2)) {
-									std::cout << "first if" << std::endl;
-									actual->touch();
-									actual->setTexture(mapTile);
-									actual = nullptr;
-								}
-								else if ((!teamASelecting) && (clickedPos.x <= (save.getMapSize() + 1) / 2)) {
-									std::cout << "second if" << std::endl;
-									actual->touch();
-									actual->setTexture(mapTile);
-									actual = nullptr;
-								}
-								else {
-									temp->touch();
-									temp->setTexture(mapTileTouched);
-									actual->touch();
-									actual->setTexture(mapTile);
-									actual = temp;
-								}
-							}
-						}
-					}
-				}
+				selectingMouseClicked(save);
 			}
 			mouseHold = true;
 		}
@@ -279,7 +65,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 		}
 		if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::Escape) {
-				return 5;
+				menuOpened = !menuOpened;
 			}
 		}
 		if (event.type == sf::Event::MouseButtonReleased) {
@@ -288,17 +74,19 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 		}
 		window.display();
 	}
-	//Playing mode
+
+	//Start of playing mode
 	text1.setString("Tura gracza A");
 	selectedUnit.setTexture(knightImA);
 	unitType = KnightA;
-	if (knightsA.size() == 0) changeUnitTurn(unitType);
-	//teamASelecting = true;
+	//if (knightsA.size() == 0) changeUnitTurn(unitType);
+	changeUnitTurn(unitType);
 
 	while (1) {
 		window.clear(sf::Color::Black);
 		window.pollEvent(event);
 		temp = first;
+		// DRAWING OBJECTS
 		for (unsigned int i = 0; i < save.getMapSize(); i++) {
 			for (unsigned int j = 0; j < save.getMapSize(); j++) {
 				window.draw(*temp);
@@ -313,6 +101,12 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 				temp = temp->getDown();
 			}
 		}
+		if (menuOpened) {
+			exit.setPosition(view.getCenter().x - 75, view.getCenter().y - 50);
+			savegame.setPosition(view.getCenter().x - 75, view.getCenter().y + 50);
+			window.draw(exit);
+			window.draw(savegame);
+		}
 		text1.setPosition(view.getCenter().x, view.getCenter().y + 300);
 		selectedUnit.setPosition(view.getCenter().x + 384, view.getCenter().y + 272);
 		window.draw(text1);
@@ -325,6 +119,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 			window.draw(fight);
 			window.draw(idle);
 		}
+		// EVENTS
 		if (event.type == sf::Event::KeyPressed) {
 			if (unitUI)unitUICheck(event);
 			if (event.key.code == sf::Keyboard::X) {
@@ -343,10 +138,18 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 				}
 			}
 			if (event.key.code == sf::Keyboard::Escape) {
-				return 5;
+				menuOpened = true;
 			}
 		}
 		if ((mouse.isButtonPressed(sf::Mouse::Left)) && (mouseHold != true)) {
+			if (menuOpened) {
+				if (exit.isMouseOver(mouse, window, view)) return 5;
+				if (savegame.isMouseOver(mouse, window, view)) {
+					saveGameAction(save);
+					menuOpened = false;
+					nullSquare = true;
+				}
+			}
 			temp = first;
 			nullSquare = false;
 			if (unitUI) unitUICheck(window, view);
@@ -467,8 +270,103 @@ void BattlegroundScene::changeUnitSelect(UnitType& unit)
 		text1.setString("Koniec");
 		text2.setString("0");
 		selectingMode = false;
-		std::cout << "USTAWILEM" << std::endl;
 		teamASelecting = true;
+		break;
+	}
+}
+
+void BattlegroundScene::placeAnotherUnit()
+{
+	switch (unitType) {
+	case KnightA:
+		temp->putUnit(new Knight(true, &knightsA)); // true for A team
+		temp->getUnit()->setType(KnightA);
+		knightsA.push_back(temp->getUnit());
+		setUpUnit(temp, knightImA);
+		KnA--;
+		if (KnA == 0) changeUnitSelect(unitType);
+		else text2.setString(std::to_string(KnA));
+		break;
+	case WarriorA:
+		temp->putUnit(new Warrior(true, &warriorsA));
+		temp->getUnit()->setType(WarriorA);
+		warriorsA.push_back(temp->getUnit());
+		setUpUnit(temp, warriorImA);
+		WaA--;
+		if (WaA == 0) changeUnitSelect(unitType);
+		else text2.setString(std::to_string(WaA));
+		break;
+	case ArcherA:
+		temp->putUnit(new Archer(true, &archersA));
+		temp->getUnit()->setType(ArcherA);
+		archersA.push_back(temp->getUnit());
+		setUpUnit(temp, archerImA);
+		ArA--;
+		if (ArA == 0) changeUnitSelect(unitType);
+		else text2.setString(std::to_string(ArA));
+		break;
+	case RiderA:
+		temp->putUnit(new Rider(true, &ridersA));
+		temp->getUnit()->setType(RiderA);
+		ridersA.push_back(temp->getUnit());
+		setUpUnit(temp, riderImA);
+		RiA--;
+		if (RiA == 0) changeUnitSelect(unitType);
+		else text2.setString(std::to_string(RiA));
+		break;
+	case MageA:
+		temp->putUnit(new Mage(true, &magesA));
+		temp->getUnit()->setType(MageA);
+		magesA.push_back(temp->getUnit());
+		setUpUnit(temp, mageImA);
+		MaA--;
+		if (MaA == 0) changeTeamSelect();
+		else text2.setString(std::to_string(MaA));
+		break;
+	case KnightB:
+		temp->putUnit(new Knight(false, &knightsB)); // false for B team
+		temp->getUnit()->setType(KnightB);
+		knightsB.push_back(temp->getUnit());
+		setUpUnit(temp, knightImB);
+		KnB--;
+		if (KnB == 0) changeUnitSelect(unitType);
+		else text2.setString(std::to_string(KnB));
+		break;
+	case WarriorB:
+		temp->putUnit(new Warrior(false, &warriorsB));
+		temp->getUnit()->setType(WarriorB);
+		warriorsB.push_back(temp->getUnit());
+		setUpUnit(temp, warriorImB);
+		WaB--;
+		if (WaB == 0) changeUnitSelect(unitType);
+		else text2.setString(std::to_string(WaB));
+		break;
+	case ArcherB:
+		temp->putUnit(new Archer(false, &archersB));
+		temp->getUnit()->setType(ArcherB);
+		archersB.push_back(temp->getUnit());
+		setUpUnit(temp, archerImB);
+		ArB--;
+		if (ArB == 0) changeUnitSelect(unitType);
+		else text2.setString(std::to_string(ArB));
+		break;
+	case RiderB:
+		temp->putUnit(new Rider(false, &ridersB));
+		temp->getUnit()->setType(RiderB);
+		ridersB.push_back(temp->getUnit());
+		setUpUnit(temp, riderImB);
+		RiB--;
+		if (RiB == 0) changeUnitSelect(unitType);
+		else text2.setString(std::to_string(RiB));
+		break;
+	case MageB:
+		temp->putUnit(new Mage(false, &magesB));
+		temp->getUnit()->setType(MageB);
+		magesB.push_back(temp->getUnit());
+		setUpUnit(temp, mageImB);
+		MaB--;
+		if (MaB == 0) changeTeamSelect();
+		else text2.setString(std::to_string(MaB));
 		break;
 	}
 }
@@ -569,11 +467,12 @@ void BattlegroundScene::changeUnitSelect(UnitType& unit)
 void BattlegroundScene::changeUnitTurn(UnitType& type) {
 	if (type == KnightA) {
 		for (int i = 0; i < knightsA.size(); i++) {
-			std::cout << "Knight! " << i << std::endl;
 			if (!knightsA.at(i)->hadTurn()) {
+				std::cout << "POINK" << std::endl;
 				return;
 			}
 		}
+		std::cout << "1! " << std::endl;
 		type = KnightB;
 		text1.setString("Tura gracza B");
 		selectedUnit.setTexture(knightImB);
@@ -584,6 +483,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 				return;
 			}
 		}
+		std::cout << "2! " << std::endl;
 		type = WarriorA;
 		text1.setString("Tura gracza A");
 		selectedUnit.setTexture(warriorImA);
@@ -594,6 +494,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 				return;
 			}
 		}
+		std::cout << "3! " << std::endl;
 		type = WarriorB;
 		text1.setString("Tura gracza B");
 		selectedUnit.setTexture(warriorImB);
@@ -604,6 +505,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 				return;
 			}
 		}
+		std::cout << "4! " << std::endl;
 		type = ArcherA;
 		text1.setString("Tura gracza A");
 		selectedUnit.setTexture(archerImA);
@@ -614,6 +516,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 				return;
 			}
 		}
+		std::cout << "5! " << std::endl;
 		type = ArcherB;
 		text1.setString("Tura gracza B");
 		selectedUnit.setTexture(archerImB);
@@ -624,6 +527,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 				return;
 			}
 		}
+		std::cout << "6! " << std::endl;
 		type = RiderA;
 		text1.setString("Tura gracza A");
 		selectedUnit.setTexture(riderImA);
@@ -634,6 +538,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 				return;
 			}
 		}
+		std::cout << "7! " << std::endl;
 		type = RiderB;
 		text1.setString("Tura gracza B");
 		selectedUnit.setTexture(riderImB);
@@ -644,6 +549,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 				return;
 			}
 		}
+		std::cout << "8! " << std::endl;
 		type = MageA;
 		text1.setString("Tura gracza A");
 		selectedUnit.setTexture(mageImA);
@@ -654,6 +560,7 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 				return;
 			}
 		}
+		std::cout << "9! " << std::endl;
 		type = MageB;
 		text1.setString("Tura gracza B");
 		selectedUnit.setTexture(mageImB);
@@ -664,12 +571,522 @@ void BattlegroundScene::changeUnitTurn(UnitType& type) {
 				return;
 			}
 		}
+		std::cout << "10! " << std::endl;
 		type = KnightA;
 		text1.setString("Tura gracza A");
 		selectedUnit.setTexture(knightImA);
 		setNewTurn();
 		changeUnitTurn(unitType);
 	}
+}
+
+void BattlegroundScene::setUpNewMap(Save & save)
+{
+	for (unsigned int i = 0; i < save.getMapSize(); i++) {
+		for (unsigned int j = 0; j < save.getMapSize(); j++) {
+			std::cout << "x: " << i << "y: " << j << std::endl;
+			if ((i == 0) && (j == 0)) {
+				first = new Square;
+				first->setTexture(mapTile);
+				first->setPosition(0, 0);
+			}
+			else if ((i == 0) && (j == 1)) {
+				prev = new Square;
+				prev->setTexture(mapTile);
+				prev->setPosition(64, 0);
+				first->setRight(prev);
+				prev->setLeft(first);
+			}
+			else if ((i == 0) && (j > 1)) {
+				temp = new Square;
+				temp->setTexture(mapTile);
+				temp->setPosition((float)j * 64, 0);
+				temp->setLeft(prev);
+				prev->setRight(temp);
+				prev = temp;
+			}
+			else if ((i > 0) && (j == 0)) {
+				prev = new Square;
+				prev->setTexture(mapTile);
+				prev->setPosition((float)j * 64, (float)i * 64);
+				temp = first;
+				for (unsigned int k = 1; k < i; k++) {
+					temp = temp->getDown();
+				}
+				temp->setDown(prev);
+				prev->setUp(temp);
+			}
+			else {
+				temp = new Square;
+				temp->setTexture(mapTile);
+				temp->setPosition((float)j * 64, (float)i * 64);
+				temp->setLeft(prev);
+				prev->setRight(temp);
+				temp->setUp(prev->getUp()->getRight());
+				temp->getUp()->setDown(temp);
+				prev = temp;
+			}
+		}
+	}
+	if (save.isSelectingMode()) {
+		KnA = save.getTeamA().at(0);
+		WaA = save.getTeamA().at(1);
+		ArA = save.getTeamA().at(2);
+		RiA = save.getTeamA().at(3);
+		MaA = save.getTeamA().at(4);
+		KnB = save.getTeamB().at(0);
+		WaB = save.getTeamB().at(1);
+		ArB = save.getTeamB().at(2);
+		RiB = save.getTeamB().at(3);
+		MaB = save.getTeamB().at(4);
+	}
+	temp = nullptr;
+	prev = nullptr;
+	changeUnitSelect(unitType);
+}
+
+void BattlegroundScene::selectingMouseClicked(Save& save)
+{
+	if (actual == nullptr) {
+		if (temp != nullptr) {
+			if ((teamASelecting) && (clickedPosX > save.getMapSize() / 2)) {
+			}
+			else if ((!teamASelecting) && (clickedPosX <= (save.getMapSize() + 1) / 2)) {
+			}
+			else if (temp->getUnit() == nullptr) {
+				actual = temp;
+				temp->touch();
+				temp->setTexture(mapTileTouched);
+			}
+		}
+	}
+	else {
+		if (actual == temp) {
+			placeAnotherUnit();
+			temp->touch();
+			temp->setTexture(mapTile);
+			actual = nullptr;
+		}
+		else {
+			if (temp->getUnit() != nullptr) {
+				actual->touch();
+				actual->setTexture(mapTile);
+				actual = nullptr;
+			}
+			else {
+				if (temp != nullptr) {
+					if ((teamASelecting) && (clickedPosX > save.getMapSize() / 2)) {}
+					else if ((!teamASelecting) && (clickedPosX <= (save.getMapSize() + 1) / 2)) {}
+					else {
+						temp->touch();
+						temp->setTexture(mapTileTouched);
+					}
+					actual->touch();
+					actual->setTexture(mapTile);
+					actual = temp;
+				}
+			}
+		}
+	}
+}
+
+void BattlegroundScene::saveGameAction(Save& save)
+{
+	Unit *tempUnit;
+	ofstr.open("save.txt");
+	if (!ofstr.good()) { return; }
+	ofstr << "mps " << save.getMapSize() << std::endl;
+	for (int i = 0; i < knightsA.size(); i++) {
+		tempUnit = knightsA.at(i);
+		ofstr << "kna ";
+		writeDownUnit(ofstr, tempUnit);
+	}
+	for (int i = 0; i < knightsB.size(); i++) {
+		tempUnit = knightsB.at(i);
+		ofstr << "knb ";
+		writeDownUnit(ofstr, tempUnit);
+	}
+	for (int i = 0; i < warriorsA.size(); i++) {
+		tempUnit = warriorsA.at(i);
+		ofstr << "waa ";
+		writeDownUnit(ofstr, tempUnit);
+	}
+	for (int i = 0; i < warriorsB.size(); i++) {
+		tempUnit = warriorsB.at(i);
+		ofstr << "wab ";
+		writeDownUnit(ofstr, tempUnit);
+	}
+	for (int i = 0; i < ridersA.size(); i++) {
+		tempUnit = ridersA.at(i);
+		ofstr << "ria ";
+		writeDownUnit(ofstr, tempUnit);
+	}
+	for (int i = 0; i < ridersB.size(); i++) {
+		tempUnit = ridersB.at(i);
+		ofstr << "rib ";
+		writeDownUnit(ofstr, tempUnit);
+	}
+	for (int i = 0; i < magesA.size(); i++) {
+		tempUnit = magesA.at(i);
+		ofstr << "maa ";
+		writeDownUnit(ofstr, tempUnit);
+	}
+	for (int i = 0; i < magesB.size(); i++) {
+		tempUnit = magesB.at(i);
+		ofstr << "mab ";
+		writeDownUnit(ofstr, tempUnit);
+	}
+	for (int i = 0; i < archersA.size(); i++) {
+		tempUnit = archersA.at(i);
+		ofstr << "ara ";
+		writeDownUnit(ofstr, tempUnit);
+	}
+	for (int i = 0; i < archersB.size(); i++) {
+		tempUnit = archersB.at(i);
+		ofstr << "arb ";
+		writeDownUnit(ofstr, tempUnit);
+	}
+	ofstr.close();
+}
+
+void BattlegroundScene::writeDownUnit(std::ofstream & ofstr, Unit *tempUnit)
+{
+	ofstr << (tempUnit->getPosition().x / 64) << " " << (tempUnit->getPosition().y / 64) << " " << tempUnit->getHp() << " " << tempUnit->getTempMovement() << " ";
+	if (tempUnit->canAttack()) ofstr << "can ";
+	else ofstr << "not ";
+	if (tempUnit->hadTurn()) ofstr << "yes ";
+	else ofstr << "no ";
+	if (tempUnit->isMovable()) ofstr << "yes ";
+	else ofstr << "no ";
+	ofstr << std::endl;
+}
+
+void BattlegroundScene::loadGameAction(Save& save)
+{
+	std::ifstream ifstr;
+	ifstr.open("save.txt");
+	Unit *tempUnit;
+	Square *tempSquare;
+	std::string info;
+	unsigned int tempInt, x, y;
+	double tempDouble;
+	ifstr >> info;
+	if (info == "mps") {
+		ifstr >> tempInt;
+		std::cout << tempInt << std::endl;
+		save.setMapSize(tempInt);
+		setUpNewMap(save);
+	}
+	while (ifstr.good()) {
+		ifstr >> info;
+		if (info == "kna") {
+			tempUnit = new Knight(true, &knightsA);
+			ifstr >> x >> y;
+			tempSquare = locateSquare(x, y);
+			tempSquare->putUnit(tempUnit);
+			tempUnit->setType(0);
+			knightsA.push_back(tempUnit);
+			setUpUnit(tempSquare, knightImA);
+			ifstr >> tempDouble;
+			tempUnit->setHp(tempDouble);
+			ifstr >> tempInt;
+			tempUnit->setTempMovement(tempInt);
+			ifstr >> info;
+			std::cout << info << std::endl;
+			if (info == "can") tempUnit->setAttackAbility(true);
+			else if (info == "not") tempUnit->setAttackAbility(false);
+			ifstr >> info;
+			std::cout << info << std::endl;
+			if (info == "yes") tempUnit->setTurn(true);
+			else if (info == "no") tempUnit->setTurn(false);
+			ifstr >> info;
+			std::cout << info << std::endl;
+			if (info == "yes") tempUnit->setMovable(true);
+			else if (info == "no") tempUnit->setMovable(false);
+			if (tempUnit->canAttack()) std::cout << "can ";
+			else if (!tempUnit->canAttack()) std::cout << "not ";
+			if (tempUnit->hadTurn()) std::cout << "yes ";
+			else if (!tempUnit->hadTurn()) std::cout << "no ";
+			if (tempUnit->isMovable()) std::cout << "yes ";
+			else if (!tempUnit->isMovable()) std::cout << "no ";
+			std::cout << std::endl;
+		}
+		if (info == "waa") {
+			tempUnit = new Warrior(true, &warriorsA);
+			ifstr >> x >> y;
+			tempSquare = locateSquare(x, y);
+			tempSquare->putUnit(tempUnit);
+			tempUnit->setType(1);
+			warriorsA.push_back(tempUnit);
+			setUpUnit(tempSquare, warriorImA);
+			ifstr >> tempDouble;
+			tempUnit->setHp(tempDouble);
+			ifstr >> tempInt;
+			tempUnit->setTempMovement(tempInt);
+			ifstr >> info;
+			std::cout << info << std::endl;
+			if (info == "can") tempUnit->setAttackAbility(true);
+			else if (info == "not") tempUnit->setAttackAbility(false);
+			if (info == "can") std::cout << "can " << std::endl;
+			else if (info == "not") std::cout << "not " << std::endl;
+			ifstr >> info;
+			std::cout << info << std::endl;
+			if (info == "yes") tempUnit->setTurn(true);
+			else if (info == "no") tempUnit->setTurn(false);
+			ifstr >> info;
+			std::cout << info << std::endl;
+			if (info == "yes") tempUnit->setMovable(true);
+			else if (info == "no") tempUnit->setMovable(false);
+			if (tempUnit->canAttack()) std::cout << "can ";
+			else if (!tempUnit->canAttack()) std::cout << "not ";
+			if (tempUnit->hadTurn()) std::cout << "yes ";
+			else if (!tempUnit->hadTurn()) std::cout << "no ";
+			if (tempUnit->isMovable()) std::cout << "yes ";
+			else if (!tempUnit->isMovable()) std::cout << "no ";
+			std::cout << std::endl;
+		}
+		if (info == "ara") {
+			tempUnit = new Archer(true, &archersA);
+			ifstr >> x >> y;
+			tempSquare = locateSquare(x, y);
+			tempSquare->putUnit(tempUnit);
+			tempUnit->setType(2);
+			archersA.push_back(tempUnit);
+			setUpUnit(tempSquare, archerImA);
+			ifstr >> tempDouble;
+			tempUnit->setHp(tempDouble);
+			ifstr >> tempInt;
+			tempUnit->setTempMovement(tempInt);
+			ifstr >> info;
+			if (info == "can") tempUnit->setAttackAbility(true);
+			else if (info == "not") tempUnit->setAttackAbility(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setTurn(true);
+			else if (info == "no") tempUnit->setTurn(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setMovable(true);
+			else if (info == "no") tempUnit->setMovable(false);
+		}
+		if (info == "ria") {
+			tempUnit = new Rider(true, &ridersA);
+			ifstr >> x >> y;
+			tempSquare = locateSquare(x, y);
+			tempSquare->putUnit(tempUnit);
+			tempUnit->setType(3);
+			ridersA.push_back(tempUnit);
+			setUpUnit(tempSquare, riderImA);
+			ifstr >> tempDouble;
+			tempUnit->setHp(tempDouble);
+			ifstr >> tempInt;
+			tempUnit->setTempMovement(tempInt);
+			ifstr >> info;
+			if (info == "can") tempUnit->setAttackAbility(true);
+			else if (info == "not") tempUnit->setAttackAbility(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setTurn(true);
+			else if (info == "no") tempUnit->setTurn(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setMovable(true);
+			else if (info == "no") tempUnit->setMovable(false);
+		}
+		if (info == "maa") {
+			tempUnit = new Mage(true, &magesA);
+			ifstr >> x >> y;
+			tempSquare = locateSquare(x, y);
+			tempSquare->putUnit(tempUnit);
+			tempUnit->setType(4);
+			magesA.push_back(tempUnit);
+			setUpUnit(tempSquare, mageImA);
+			ifstr >> tempDouble;
+			tempUnit->setHp(tempDouble);
+			ifstr >> tempInt;
+			tempUnit->setTempMovement(tempInt);
+			ifstr >> info;
+			if (info == "can") tempUnit->setAttackAbility(true);
+			else if (info == "not") tempUnit->setAttackAbility(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setTurn(true);
+			else if (info == "no") tempUnit->setTurn(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setMovable(true);
+			else if (info == "no") tempUnit->setMovable(false);
+		}
+		if (info == "knb") {
+			tempUnit = new Knight(false, &knightsB);
+			ifstr >> x >> y;
+			tempSquare = locateSquare(x, y);
+			tempSquare->putUnit(tempUnit);
+			tempUnit->setType(5);
+			knightsB.push_back(tempUnit);
+			setUpUnit(tempSquare, knightImB);
+			ifstr >> tempDouble;
+			tempUnit->setHp(tempDouble);
+			ifstr >> tempInt;
+			tempUnit->setTempMovement(tempInt);
+			ifstr >> info;
+			if (info == "can") tempUnit->setAttackAbility(true);
+			else if (info == "not") tempUnit->setAttackAbility(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setTurn(true);
+			else if (info == "no") tempUnit->setTurn(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setMovable(true);
+			else if (info == "no") tempUnit->setMovable(false);
+		}
+		if (info == "wab") {
+			tempUnit = new Warrior(false, &warriorsB);
+			ifstr >> x >> y;
+			tempSquare = locateSquare(x, y);
+			tempSquare->putUnit(tempUnit);
+			tempUnit->setType(6);
+			warriorsB.push_back(tempUnit);
+			setUpUnit(tempSquare, warriorImB);
+			ifstr >> tempDouble;
+			tempUnit->setHp(tempDouble);
+			ifstr >> tempInt;
+			tempUnit->setTempMovement(tempInt);
+			ifstr >> info;
+			if (info == "can") tempUnit->setAttackAbility(true);
+			else if (info == "not") tempUnit->setAttackAbility(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setTurn(true);
+			else if (info == "no") tempUnit->setTurn(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setMovable(true);
+			else if (info == "no") tempUnit->setMovable(false);
+		}
+		if (info == "arb") {
+			tempUnit = new Archer(false, &archersB);
+			ifstr >> x >> y;
+			tempSquare = locateSquare(x, y);
+			tempSquare->putUnit(tempUnit);
+			tempUnit->setType(7);
+			archersB.push_back(tempUnit);
+			setUpUnit(tempSquare, archerImB);
+			ifstr >> tempDouble;
+			tempUnit->setHp(tempDouble);
+			ifstr >> tempInt;
+			tempUnit->setTempMovement(tempInt);
+			ifstr >> info;
+			if (info == "can") tempUnit->setAttackAbility(true);
+			else if (info == "not") tempUnit->setAttackAbility(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setTurn(true);
+			else if (info == "no") tempUnit->setTurn(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setMovable(true);
+			else if (info == "no") tempUnit->setMovable(false);
+		}
+		if (info == "rib") {
+			tempUnit = new Rider(false, &ridersB);
+			ifstr >> x >> y;
+			tempSquare = locateSquare(x, y);
+			tempSquare->putUnit(tempUnit);
+			tempUnit->setType(8);
+			ridersB.push_back(tempUnit);
+			setUpUnit(tempSquare, riderImB);
+			ifstr >> tempDouble;
+			tempUnit->setHp(tempDouble);
+			ifstr >> tempInt;
+			tempUnit->setTempMovement(tempInt);
+			ifstr >> info;
+			if (info == "can") tempUnit->setAttackAbility(true);
+			else if (info == "not") tempUnit->setAttackAbility(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setTurn(true);
+			else if (info == "no") tempUnit->setTurn(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setMovable(true);
+			else if (info == "no") tempUnit->setMovable(false);
+		}
+		if (info == "mab") {
+			tempUnit = new Mage(false, &magesB);
+			ifstr >> x >> y;
+			tempSquare = locateSquare(x, y);
+			tempSquare->putUnit(tempUnit);
+			tempUnit->setType(9);
+			magesB.push_back(tempUnit);
+			setUpUnit(tempSquare, mageImB);
+			ifstr >> tempDouble;
+			tempUnit->setHp(tempDouble);
+			ifstr >> tempInt;
+			tempUnit->setTempMovement(tempInt);
+			ifstr >> info;
+			if (info == "can") tempUnit->setAttackAbility(true);
+			else if (info == "not") tempUnit->setAttackAbility(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setTurn(true);
+			else if (info == "no") tempUnit->setTurn(false);
+			ifstr >> info;
+			if (info == "yes") tempUnit->setMovable(true);
+			else if (info == "no") tempUnit->setMovable(false);
+		}
+	}
+}
+
+void BattlegroundScene::readUnit(std::ifstream & ifstr, Unit * tempUnit)
+{
+
+}
+
+void BattlegroundScene::mapClickedPosition(sf::RenderWindow & window, sf::View& view)
+{
+	for (int i = 0; i < (int)((mouse.getPosition(window).x + view.getCenter().x - 512) / 64); i++) {
+		if (temp->getRight() == nullptr) {
+			nullSquare = true;
+			break;
+		}
+		temp = temp->getRight();
+	}
+	for (int i = 0; i < (int)((mouse.getPosition(window).y + view.getCenter().y - 400) / 64); i++) {
+		if ((temp->getDown() == nullptr) || (nullSquare)) {
+			nullSquare = true;
+			break;
+		}
+		temp = temp->getDown();
+	}
+}
+
+void BattlegroundScene::mapClickedPosition(sf::RenderWindow & window, sf::View & view, int& ClickedPosX)
+{
+	clickedPosX = 1;
+	for (int i = 0; i < (int)((mouse.getPosition(window).x + view.getCenter().x - 512) / 64); i++) {
+		if (temp->getRight() == nullptr) {
+			nullSquare = true;
+			break;
+		}
+		clickedPosX = clickedPosX + 1;
+		temp = temp->getRight();
+	}
+	for (int i = 0; i < (int)((mouse.getPosition(window).y + view.getCenter().y - 400) / 64); i++) {
+		if ((temp->getDown() == nullptr) || (nullSquare)) {
+			nullSquare = true;
+			break;
+		}
+		temp = temp->getDown();
+	}
+}
+
+Square * BattlegroundScene::locateSquare(int x, int y)
+{
+	Square *tempSquare = first;
+	nullSquare = false;
+	for (int i = 0; i < x; i++) {
+		if (tempSquare->getRight() == nullptr) {
+			nullSquare = true;
+			break;
+		}
+		tempSquare = tempSquare->getRight();
+	}
+	for (int i = 0; i < y; i++) {
+		if ((tempSquare->getDown() == nullptr) || (nullSquare)) {
+			nullSquare = true;
+			break;
+		}
+		tempSquare = tempSquare->getDown();
+	}
+	if (nullSquare) return nullptr;
+	else return tempSquare;
 }
 
 void BattlegroundScene::setUpUnit(Square *temp, sf::Texture & texture)
@@ -1036,6 +1453,7 @@ void BattlegroundScene::unitUICheck(sf::Event & event)
 {
 	if (event.key.code == sf::Keyboard::S) {
 		if (actual->getUnit()->canAttack()) {
+			std::cout << actual->getUnit()->getAttackRange();
 			findEnemy(actual, actual->getUnit()->getAttackRange(), true, true);
 			turnType = chooseTarget;
 			unitUI = false;
@@ -1142,9 +1560,14 @@ BattlegroundScene::BattlegroundScene()
 	moveIm.loadFromFile("include/buttons/move.png");
 	idleIm.loadFromFile("include/buttons/idle.png");
 	fightIm.loadFromFile("include/buttons/fight.png");
+	savegameIm.loadFromFile("include/buttons/savegame.png");
+	exitIm.loadFromFile("include/buttons/exit2.png");
 	move.setTexture(moveIm);
 	idle.setTexture(idleIm);
 	fight.setTexture(fightIm);
+	savegame.setTexture(savegameIm);
+	exit.setTexture(exitIm);
+
 }
 
 

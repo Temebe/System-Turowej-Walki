@@ -2,6 +2,17 @@
 #include "Save.h"
 
 
+void Save::saveToFile(std::string & test)
+{
+
+}
+
+void Save::setLoadingMode(bool val)
+{
+	loadingMode = val;
+	selectingMode = !val;
+}
+
 void Save::setTeamA(unsigned int & knights, unsigned int & archers, unsigned int & warriors, unsigned int & mages, unsigned int & riders)
 {
 	teamA.push_back(knights);
@@ -38,6 +49,16 @@ unsigned int Save::getMapSize()
 void Save::setMapSize(unsigned int & value)
 {
 	mapSize = value;
+}
+
+bool Save::isSelectingMode()
+{
+	return selectingMode;
+}
+
+bool Save::isLoadingMode()
+{
+	return loadingMode;
 }
 
 Square * Save::getFirst()

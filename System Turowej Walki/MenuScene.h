@@ -1,5 +1,7 @@
 #pragma once
 #include "Scene.h"
+#include "Save.h"
+
 class MenuScene :
 	public Scene
 {
@@ -8,6 +10,6 @@ class MenuScene :
 public:
 	MenuScene();
 	~MenuScene();
-	int render(sf::RenderWindow& window);
+	int render(sf::RenderWindow& window, Save& save);
 };
 

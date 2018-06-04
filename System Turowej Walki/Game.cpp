@@ -27,7 +27,7 @@ void Game::run()
 		switch (actualScene) {
 		case 0: //menu
 			std::cout << actualScene << std::endl;
-			actualScene = menuScene.render(window);
+			actualScene = menuScene.render(window, save);
 			break;
 		case 1: //options
 			std::cout << actualScene << std::endl;

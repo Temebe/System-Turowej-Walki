@@ -9,7 +9,7 @@ MenuScene::MenuScene()
 	test.setFillColor(sf::Color::Red);
 	test.setPosition(200, 200);
 	version.setFont(font);
-	version.setString("alpha 1.0");
+	version.setString("alpha 1.1");
 	version.setPosition(900, 750);
 	newGame.setTextureImage("include/buttons/newgame.png");
 	newGame.setPosition(310, 300);
@@ -25,7 +25,7 @@ MenuScene::~MenuScene()
 {
 }
 
-int MenuScene::render(sf::RenderWindow& window)
+int MenuScene::render(sf::RenderWindow& window, Save& save)
 {
 	while (true) {
 		window.clear(sf::Color::Black);
@@ -47,7 +47,8 @@ int MenuScene::render(sf::RenderWindow& window)
 			}
 			if (loadGame.isMouseOver(mouse, window)) {
 				std::cout << "Load game" << std::endl;
-				return 2;
+				save.setLoadingMode(true);
+				return 4;
 			}
 			if (options.isMouseOver(mouse, window)) {
 				std::cout << "Options" << std::endl;

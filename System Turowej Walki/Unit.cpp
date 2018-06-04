@@ -34,6 +34,16 @@ void Unit::setType(int value)
 	type = value;
 }
 
+void Unit::setTempMovement(int value)
+{
+	tempMovement = value;
+}
+
+void Unit::setHp(double value)
+{
+	hp = value;
+}
+
 int Unit::getType()
 {
 	return type;
@@ -47,6 +57,11 @@ void Unit::setHPBarTexture(sf::Texture& texture)
 void Unit::setHPBar(sf::Sprite * bar)
 {
 	hpBar = bar;
+}
+
+void Unit::setAttackAbility(bool val)
+{
+	hasAttacked = !val;
 }
 
 int Unit::getAttackRange()
@@ -72,6 +87,11 @@ bool Unit::hadTurn()
 bool Unit::canAttack()
 {
 	return !hasAttacked;
+}
+
+double Unit::getHp()
+{
+	return hp;
 }
 
 void Unit::setMovable(bool val)
