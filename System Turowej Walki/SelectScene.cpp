@@ -68,6 +68,21 @@ int SelectScene::render(sf::RenderWindow& window, Save& save)
 		}
 		if ((event.type == sf::Event::MouseButtonPressed)&&(mouseHold != true)) {
 			mouseHold = true;
+			if ((knightA.isMouseOver(mouse, window)) || (knightB.isMouseOver(mouse, window))) {
+				std::cout << "knight" << std::endl;
+			}
+			if ((warriorA.isMouseOver(mouse, window)) || (warriorB.isMouseOver(mouse, window))) {
+				std::cout << "warrior" << std::endl;
+			}
+			if ((archerA.isMouseOver(mouse, window)) || (archerB.isMouseOver(mouse, window))) {
+				std::cout << "archer" << std::endl;
+			}
+			if ((riderA.isMouseOver(mouse, window)) || (riderB.isMouseOver(mouse, window))) {
+				std::cout << "rider" << std::endl;
+			}
+			if ((mageA.isMouseOver(mouse, window)) || (mageB.isMouseOver(mouse, window))) {
+				std::cout << "mage" << std::endl;
+			}
 			if(upa1.isMouseOver(mouse, window)) {
 				std::cout << "upa1" << std::endl;
 				va1++;

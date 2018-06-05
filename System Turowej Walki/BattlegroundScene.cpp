@@ -765,268 +765,114 @@ void BattlegroundScene::loadGameAction(Save& save)
 {
 	std::ifstream ifstr;
 	ifstr.open("save.txt");
-	Unit *tempUnit;
-	Square *tempSquare;
 	std::string info;
-	unsigned int tempInt, x, y;
-	double tempDouble;
+	unsigned int tempInt;
 	ifstr >> info;
 	if (info == "mps") {
 		ifstr >> tempInt;
-		std::cout << tempInt << std::endl;
 		save.setMapSize(tempInt);
 		setUpNewMap(save);
 	}
+	loadingUnits(ifstr);
+}
+
+void BattlegroundScene::loadingUnits(std::ifstream& ifstr)
+{
+	Unit *tempUnit;
+	std::string info;
 	while (ifstr.good()) {
 		ifstr >> info;
+		std::cout << info << " ";
 		if (info == "kna") {
 			tempUnit = new Knight(true, &knightsA);
-			ifstr >> x >> y;
-			tempSquare = locateSquare(x, y);
-			tempSquare->putUnit(tempUnit);
 			tempUnit->setType(0);
 			knightsA.push_back(tempUnit);
-			setUpUnit(tempSquare, knightImA);
-			ifstr >> tempDouble;
-			tempUnit->setHp(tempDouble);
-			ifstr >> tempInt;
-			tempUnit->setTempMovement(tempInt);
-			ifstr >> info;
-			std::cout << info << std::endl;
-			if (info == "can") tempUnit->setAttackAbility(true);
-			else if (info == "not") tempUnit->setAttackAbility(false);
-			ifstr >> info;
-			std::cout << info << std::endl;
-			if (info == "yes") tempUnit->setTurn(true);
-			else if (info == "no") tempUnit->setTurn(false);
-			ifstr >> info;
-			std::cout << info << std::endl;
-			if (info == "yes") tempUnit->setMovable(true);
-			else if (info == "no") tempUnit->setMovable(false);
-			if (tempUnit->canAttack()) std::cout << "can ";
-			else if (!tempUnit->canAttack()) std::cout << "not ";
-			if (tempUnit->hadTurn()) std::cout << "yes ";
-			else if (!tempUnit->hadTurn()) std::cout << "no ";
-			if (tempUnit->isMovable()) std::cout << "yes ";
-			else if (!tempUnit->isMovable()) std::cout << "no ";
-			std::cout << std::endl;
+			readUnit(ifstr, tempUnit, knightImA);
 		}
-		if (info == "waa") {
+		else if (info == "waa") {
 			tempUnit = new Warrior(true, &warriorsA);
-			ifstr >> x >> y;
-			tempSquare = locateSquare(x, y);
-			tempSquare->putUnit(tempUnit);
 			tempUnit->setType(1);
 			warriorsA.push_back(tempUnit);
-			setUpUnit(tempSquare, warriorImA);
-			ifstr >> tempDouble;
-			tempUnit->setHp(tempDouble);
-			ifstr >> tempInt;
-			tempUnit->setTempMovement(tempInt);
-			ifstr >> info;
-			std::cout << info << std::endl;
-			if (info == "can") tempUnit->setAttackAbility(true);
-			else if (info == "not") tempUnit->setAttackAbility(false);
-			if (info == "can") std::cout << "can " << std::endl;
-			else if (info == "not") std::cout << "not " << std::endl;
-			ifstr >> info;
-			std::cout << info << std::endl;
-			if (info == "yes") tempUnit->setTurn(true);
-			else if (info == "no") tempUnit->setTurn(false);
-			ifstr >> info;
-			std::cout << info << std::endl;
-			if (info == "yes") tempUnit->setMovable(true);
-			else if (info == "no") tempUnit->setMovable(false);
-			if (tempUnit->canAttack()) std::cout << "can ";
-			else if (!tempUnit->canAttack()) std::cout << "not ";
-			if (tempUnit->hadTurn()) std::cout << "yes ";
-			else if (!tempUnit->hadTurn()) std::cout << "no ";
-			if (tempUnit->isMovable()) std::cout << "yes ";
-			else if (!tempUnit->isMovable()) std::cout << "no ";
-			std::cout << std::endl;
+			readUnit(ifstr, tempUnit, warriorImA);
 		}
-		if (info == "ara") {
+		else if (info == "ara") {
 			tempUnit = new Archer(true, &archersA);
-			ifstr >> x >> y;
-			tempSquare = locateSquare(x, y);
-			tempSquare->putUnit(tempUnit);
 			tempUnit->setType(2);
 			archersA.push_back(tempUnit);
-			setUpUnit(tempSquare, archerImA);
-			ifstr >> tempDouble;
-			tempUnit->setHp(tempDouble);
-			ifstr >> tempInt;
-			tempUnit->setTempMovement(tempInt);
-			ifstr >> info;
-			if (info == "can") tempUnit->setAttackAbility(true);
-			else if (info == "not") tempUnit->setAttackAbility(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setTurn(true);
-			else if (info == "no") tempUnit->setTurn(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setMovable(true);
-			else if (info == "no") tempUnit->setMovable(false);
+			readUnit(ifstr, tempUnit, archerImA);
 		}
-		if (info == "ria") {
+		else if (info == "ria") {
 			tempUnit = new Rider(true, &ridersA);
-			ifstr >> x >> y;
-			tempSquare = locateSquare(x, y);
-			tempSquare->putUnit(tempUnit);
 			tempUnit->setType(3);
 			ridersA.push_back(tempUnit);
-			setUpUnit(tempSquare, riderImA);
-			ifstr >> tempDouble;
-			tempUnit->setHp(tempDouble);
-			ifstr >> tempInt;
-			tempUnit->setTempMovement(tempInt);
-			ifstr >> info;
-			if (info == "can") tempUnit->setAttackAbility(true);
-			else if (info == "not") tempUnit->setAttackAbility(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setTurn(true);
-			else if (info == "no") tempUnit->setTurn(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setMovable(true);
-			else if (info == "no") tempUnit->setMovable(false);
+			readUnit(ifstr, tempUnit, riderImA);
 		}
-		if (info == "maa") {
+		else if (info == "maa") {
 			tempUnit = new Mage(true, &magesA);
-			ifstr >> x >> y;
-			tempSquare = locateSquare(x, y);
-			tempSquare->putUnit(tempUnit);
 			tempUnit->setType(4);
 			magesA.push_back(tempUnit);
-			setUpUnit(tempSquare, mageImA);
-			ifstr >> tempDouble;
-			tempUnit->setHp(tempDouble);
-			ifstr >> tempInt;
-			tempUnit->setTempMovement(tempInt);
-			ifstr >> info;
-			if (info == "can") tempUnit->setAttackAbility(true);
-			else if (info == "not") tempUnit->setAttackAbility(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setTurn(true);
-			else if (info == "no") tempUnit->setTurn(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setMovable(true);
-			else if (info == "no") tempUnit->setMovable(false);
+			readUnit(ifstr, tempUnit, mageImA);
 		}
-		if (info == "knb") {
+		else if (info == "knb") {
 			tempUnit = new Knight(false, &knightsB);
-			ifstr >> x >> y;
-			tempSquare = locateSquare(x, y);
-			tempSquare->putUnit(tempUnit);
 			tempUnit->setType(5);
 			knightsB.push_back(tempUnit);
-			setUpUnit(tempSquare, knightImB);
-			ifstr >> tempDouble;
-			tempUnit->setHp(tempDouble);
-			ifstr >> tempInt;
-			tempUnit->setTempMovement(tempInt);
-			ifstr >> info;
-			if (info == "can") tempUnit->setAttackAbility(true);
-			else if (info == "not") tempUnit->setAttackAbility(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setTurn(true);
-			else if (info == "no") tempUnit->setTurn(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setMovable(true);
-			else if (info == "no") tempUnit->setMovable(false);
+			readUnit(ifstr, tempUnit, knightImB);
 		}
-		if (info == "wab") {
+		else if (info == "wab") {
 			tempUnit = new Warrior(false, &warriorsB);
-			ifstr >> x >> y;
-			tempSquare = locateSquare(x, y);
-			tempSquare->putUnit(tempUnit);
 			tempUnit->setType(6);
 			warriorsB.push_back(tempUnit);
-			setUpUnit(tempSquare, warriorImB);
-			ifstr >> tempDouble;
-			tempUnit->setHp(tempDouble);
-			ifstr >> tempInt;
-			tempUnit->setTempMovement(tempInt);
-			ifstr >> info;
-			if (info == "can") tempUnit->setAttackAbility(true);
-			else if (info == "not") tempUnit->setAttackAbility(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setTurn(true);
-			else if (info == "no") tempUnit->setTurn(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setMovable(true);
-			else if (info == "no") tempUnit->setMovable(false);
+			readUnit(ifstr, tempUnit, warriorImB);
 		}
-		if (info == "arb") {
+		else if (info == "arb") {
 			tempUnit = new Archer(false, &archersB);
-			ifstr >> x >> y;
-			tempSquare = locateSquare(x, y);
-			tempSquare->putUnit(tempUnit);
 			tempUnit->setType(7);
 			archersB.push_back(tempUnit);
-			setUpUnit(tempSquare, archerImB);
-			ifstr >> tempDouble;
-			tempUnit->setHp(tempDouble);
-			ifstr >> tempInt;
-			tempUnit->setTempMovement(tempInt);
-			ifstr >> info;
-			if (info == "can") tempUnit->setAttackAbility(true);
-			else if (info == "not") tempUnit->setAttackAbility(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setTurn(true);
-			else if (info == "no") tempUnit->setTurn(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setMovable(true);
-			else if (info == "no") tempUnit->setMovable(false);
+			readUnit(ifstr, tempUnit, archerImB);
 		}
-		if (info == "rib") {
+		else if (info == "rib") {
 			tempUnit = new Rider(false, &ridersB);
-			ifstr >> x >> y;
-			tempSquare = locateSquare(x, y);
-			tempSquare->putUnit(tempUnit);
 			tempUnit->setType(8);
 			ridersB.push_back(tempUnit);
-			setUpUnit(tempSquare, riderImB);
-			ifstr >> tempDouble;
-			tempUnit->setHp(tempDouble);
-			ifstr >> tempInt;
-			tempUnit->setTempMovement(tempInt);
-			ifstr >> info;
-			if (info == "can") tempUnit->setAttackAbility(true);
-			else if (info == "not") tempUnit->setAttackAbility(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setTurn(true);
-			else if (info == "no") tempUnit->setTurn(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setMovable(true);
-			else if (info == "no") tempUnit->setMovable(false);
+			readUnit(ifstr, tempUnit, riderImB);
 		}
-		if (info == "mab") {
+		else if (info == "mab") {
 			tempUnit = new Mage(false, &magesB);
-			ifstr >> x >> y;
-			tempSquare = locateSquare(x, y);
-			tempSquare->putUnit(tempUnit);
 			tempUnit->setType(9);
 			magesB.push_back(tempUnit);
-			setUpUnit(tempSquare, mageImB);
-			ifstr >> tempDouble;
-			tempUnit->setHp(tempDouble);
-			ifstr >> tempInt;
-			tempUnit->setTempMovement(tempInt);
-			ifstr >> info;
-			if (info == "can") tempUnit->setAttackAbility(true);
-			else if (info == "not") tempUnit->setAttackAbility(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setTurn(true);
-			else if (info == "no") tempUnit->setTurn(false);
-			ifstr >> info;
-			if (info == "yes") tempUnit->setMovable(true);
-			else if (info == "no") tempUnit->setMovable(false);
+			readUnit(ifstr, tempUnit, mageImB);
 		}
 	}
 }
 
-void BattlegroundScene::readUnit(std::ifstream & ifstr, Unit * tempUnit)
+void BattlegroundScene::readUnit(std::ifstream & ifstr, Unit * tempUnit, sf::Texture& texture)
 {
-
+	Square *tempSquare;
+	std::string info;
+	int tempInt;
+	double tempDouble;
+	ifstr >> x >> y;
+	std::cout << x << " " << y << " ";
+	tempSquare = locateSquare(x, y);
+	tempSquare->putUnit(tempUnit);
+	ifstr >> tempDouble;
+	tempUnit->setHp(tempDouble);
+	ifstr >> tempInt;
+	tempUnit->setTempMovement(tempInt);
+	ifstr >> info;
+	setUpUnit(tempSquare, texture);
+	std::cout << tempDouble << " " << tempInt << " " << info << " ";
+	if (info == "can") tempUnit->setAttackAbility(true);
+	else if (info == "not") tempUnit->setAttackAbility(false);
+	ifstr >> info;
+	std::cout << info << " ";
+	if (info == "yes") tempUnit->setTurn(true);
+	else if (info == "no") tempUnit->setTurn(false);
+	ifstr >> info;
+	std::cout << info << std::endl;
+	if (info == "yes") tempUnit->setMovable(true);
+	else if (info == "no") tempUnit->setMovable(false);
 }
 
 void BattlegroundScene::mapClickedPosition(sf::RenderWindow & window, sf::View& view)
@@ -1096,7 +942,7 @@ void BattlegroundScene::setUpUnit(Square *temp, sf::Texture & texture)
 	temp->getUnit()->setScale(0.5, 0.5);
 	temp->getUnit()->setHPBar(new sf::Sprite); //something is not yes
 	temp->getUnit()->setHPBarTexture(hpbarIm);
-	temp->getUnit()->getHPBar()->setScale(1, 0.4);
+	temp->getUnit()->getHPBar()->setScale(temp->getUnit()->getHp() / temp->getUnit()->getMaxHp(), 0.4);
 	temp->getUnit()->getHPBar()->setPosition(temp->getUnit()->getPosition().x, (double)temp->getUnit()->getPosition().y + ((double)temp->getUnit()->getTexture()->getSize().y * 0.75 * 0.5));
 }
 
@@ -1410,6 +1256,12 @@ void BattlegroundScene::setNewTurn()
 	}
 	for (int i = 0; i < magesB.size(); i++) {
 		magesB.at(i)->prepareForTurn();
+	}
+	for (int i = 0; i < ridersA.size(); i++) {
+		ridersA.at(i)->prepareForTurn();
+	}
+	for (int i = 0; i < ridersB.size(); i++) {
+		ridersB.at(i)->prepareForTurn();
 	}
 }
 

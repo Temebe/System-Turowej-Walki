@@ -14,7 +14,8 @@ class SelectScene :
 	InterfaceButton dna1, dna2, dna3, dna4, dna5, dnb1, dnb2, dnb3, dnb4, dnb5, dnMap, startGame;
 	sf::Texture knightImA, warriorImA, mageImA, riderImA, archerImA;
 	sf::Texture knightImB, warriorImB, mageImB, riderImB, archerImB;
-	sf::Sprite knightA, knightB, warriorA, warriorB, mageA, mageB, archerA, archerB, riderA, riderB;
+	InterfaceButton knightA, knightB, warriorA, warriorB, mageA, mageB, archerA, archerB, riderA, riderB;
+	InterfaceButton infoBg;
 public:
 	int render(sf::RenderWindow& window, Save& save);
 	SelectScene();

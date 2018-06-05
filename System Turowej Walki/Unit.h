@@ -36,6 +36,7 @@ public:
 	bool hadTurn();
 	bool canAttack();
 	double getHp();
+	int getMaxHp();
 	void setMovable(bool val);
 	bool isMovable();
 	void prepareForTurn();

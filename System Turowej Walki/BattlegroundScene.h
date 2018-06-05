@@ -44,7 +44,8 @@ public:
 	void saveGameAction(Save& save);
 	void writeDownUnit(std::ofstream& ofstr, Unit *tempUnit);
 	void loadGameAction(Save& save);
-	void readUnit(std::ifstream & ifstr, Unit * tempUnit);
+	void loadingUnits(std::ifstream& ifstr);
+	void readUnit(std::ifstream & ifstr, Unit * tempUnit, sf::Texture& texture);
 	Square *locateSquare(int x, int y);
 	void mapClickedPosition(sf::RenderWindow& window, sf::View& view);
 	void mapClickedPosition(sf::RenderWindow& window, sf::View& view, int& ClickedPosX);

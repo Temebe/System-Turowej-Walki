@@ -94,6 +94,11 @@ double Unit::getHp()
 	return hp;
 }
 
+int Unit::getMaxHp()
+{
+	return maxHp;
+}
+
 void Unit::setMovable(bool val)
 {
 	movable = val;
@@ -186,7 +191,6 @@ Knight::Knight(bool choice, std::vector<Unit*> *parent)
 	attackRange = 1;
 	turn = false;
 	movable = true;
-	std::cout << "Knight! " << tempMovement << std::endl;
 	parentVector = parent;
 }
 
