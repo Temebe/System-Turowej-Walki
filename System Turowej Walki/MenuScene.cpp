@@ -5,11 +5,11 @@
 MenuScene::MenuScene()
 {
 	test.setFont(font);
-	test.setString("TYTUL GRY");
+	test.setString("System walki turowej");
 	test.setFillColor(sf::Color::Red);
 	test.setPosition(200, 200);
 	version.setFont(font);
-	version.setString("alpha 1.1");
+	version.setString("alpha 1.2");
 	version.setPosition(900, 750);
 	newGame.setTextureImage("include/buttons/newgame.png");
 	newGame.setPosition(310, 300);

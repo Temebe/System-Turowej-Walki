@@ -8,6 +8,12 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 	else setUpNewMap(save); //making map NxN
 	selectingMode = save.isSelectingMode();
 
+	if (errorOccured) {
+		errorScreen(window, view);
+		errorOccured = false;
+		return 5;
+	}
+
 	while (selectingMode) { //loop for placing units on map
 		window.clear(sf::Color::Black);
 		window.pollEvent(event);
@@ -764,16 +770,29 @@ void BattlegroundScene::writeDownUnit(std::ofstream & ofstr, Unit *tempUnit)
 void BattlegroundScene::loadGameAction(Save& save)
 {
 	std::ifstream ifstr;
-	ifstr.open("save.txt");
 	std::string info;
 	unsigned int tempInt;
-	ifstr >> info;
-	if (info == "mps") {
-		ifstr >> tempInt;
-		save.setMapSize(tempInt);
-		setUpNewMap(save);
+	try {
+		ifstr.open("save.txt");
+		if (!ifstr.is_open()) throw opening;
+		ifstr >> info;
+		if (info == "mps") {
+			ifstr >> tempInt;
+			if (ifstr.fail()) throw logic;
+			else {
+				if (tempInt == 0) throw logic;
+			}
+			save.setMapSize(tempInt);
+			setUpNewMap(save);
+		}
+		else throw reading;
+		loadingUnits(ifstr);
 	}
-	loadingUnits(ifstr);
+	catch (ErrorCode code)
+	{
+		errorCode = code;
+		errorOccured = true;
+	}
 }
 
 void BattlegroundScene::loadingUnits(std::ifstream& ifstr)
@@ -843,6 +862,7 @@ void BattlegroundScene::loadingUnits(std::ifstream& ifstr)
 			magesB.push_back(tempUnit);
 			readUnit(ifstr, tempUnit, mageImB);
 		}
+		else throw reading;
 	}
 }
 
@@ -850,29 +870,49 @@ void BattlegroundScene::readUnit(std::ifstream & ifstr, Unit * tempUnit, sf::Tex
 {
 	Square *tempSquare;
 	std::string info;
-	int tempInt;
+	int tempInt, x, y;
 	double tempDouble;
-	ifstr >> x >> y;
+	ifstr >> x;
+	if (ifstr.fail()) throw reading;
+	else {
+		if (x < 0) throw logic;
+	}
+	ifstr >> y;
+	if (ifstr.fail()) throw reading;
+	else {
+		if (y < 0) throw logic;
+	}
 	std::cout << x << " " << y << " ";
 	tempSquare = locateSquare(x, y);
 	tempSquare->putUnit(tempUnit);
 	ifstr >> tempDouble;
+	if (ifstr.fail()) throw reading;
+	else {
+		if ((tempDouble < 0) || (tempUnit->getMaxHp() < tempDouble)) throw logic;
+	}
 	tempUnit->setHp(tempDouble);
 	ifstr >> tempInt;
+	if (ifstr.fail()) throw reading;
+	else {
+		if ((tempInt < 0) || (tempInt > tempUnit->getMovement())) throw logic;
+	}
 	tempUnit->setTempMovement(tempInt);
 	ifstr >> info;
 	setUpUnit(tempSquare, texture);
 	std::cout << tempDouble << " " << tempInt << " " << info << " ";
 	if (info == "can") tempUnit->setAttackAbility(true);
 	else if (info == "not") tempUnit->setAttackAbility(false);
+	else throw reading;
 	ifstr >> info;
 	std::cout << info << " ";
 	if (info == "yes") tempUnit->setTurn(true);
 	else if (info == "no") tempUnit->setTurn(false);
+	else throw reading;
 	ifstr >> info;
 	std::cout << info << std::endl;
 	if (info == "yes") tempUnit->setMovable(true);
 	else if (info == "no") tempUnit->setMovable(false);
+	else throw reading;
 }
 
 void BattlegroundScene::mapClickedPosition(sf::RenderWindow & window, sf::View& view)
@@ -1231,6 +1271,40 @@ void BattlegroundScene::chooseTargetTurn(sf::RenderWindow & window, sf::View & v
 	}
 }
 
+void BattlegroundScene::errorScreen(sf::RenderWindow & window, sf::View & view)
+{
+	sf::Text *errorDialogue = new sf::Text;
+	sf::Texture *errorBg = new sf::Texture;
+	InterfaceButton *errorBox = new InterfaceButton;
+	errorDialogue->setFont(font);
+	errorDialogue->setFillColor(sf::Color::Black);
+	errorDialogue->setCharacterSize(17);
+	errorDialogue->setPosition(380, 340);
+	errorBg->loadFromFile("include/buttons/dialogueWindow.png");
+	errorBox->setTexture(*errorBg);
+	errorBox->setPosition(362, 325);
+	if (errorCode == opening) {
+		errorDialogue->setString("The game couldn't open the file.\nMaybe it's missing or you\nhaven't saved your game?\n\nClick here to proceed...");
+	}
+	if (errorCode == reading) {
+		errorDialogue->setString("Some problem with text formating\noccured. Save is corrupted.\n\nClick here to proceed...");
+	}
+	if (errorCode == logic) {
+		errorDialogue->setString("There is problem with file's data.\nIt seems to be modified.\n\nClick here to proceed...");
+	}
+	while (1) {
+		window.clear(sf::Color::Black);
+		window.draw(*errorBox);
+		window.draw(*errorDialogue);
+		window.pollEvent(event);
+		if (event.type == sf::Event::MouseButtonPressed) {
+			if (errorBox->isMouseOver(mouse, window)) return;
+		}
+		window.display();
+		//add exit on click
+	}
+}
+
 void BattlegroundScene::setNewTurn()
 {
 	for (int i = 0; i < knightsA.size(); i++) {
@@ -1394,6 +1468,7 @@ BattlegroundScene::BattlegroundScene()
 	holding = false;
 	selectingMode = true;
 	teamASelecting = true;
+	errorOccured = false;
 	turnType = nothing;
 	unitType = KnightA;
 	text1.setFont(font);

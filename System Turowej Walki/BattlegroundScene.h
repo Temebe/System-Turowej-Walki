@@ -16,7 +16,7 @@ class BattlegroundScene :
 	std::ifstream ifstr;
 	std::ofstream ofstr;
 	bool mouseHold, nullSquare, holding, unitUIClicked, menuOpened;
-	bool selectingMode, teamASelecting, unitUI;
+	bool selectingMode, teamASelecting, unitUI, errorOccured;
 	Square *first, *temp, *prev, *actual;
 	sf::IntRect intRect;
 	sf::Texture mapTile, mapTileTouched, mapTileAble, hpbarIm;
@@ -28,8 +28,10 @@ class BattlegroundScene :
 	sf::Sprite selectedUnit;
 	enum UnitType {KnightA, WarriorA, ArcherA, RiderA, MageA, KnightB, WarriorB, ArcherB, RiderB, MageB};
 	UnitType unitType;
-	enum TurnType {nothing, chooseDirection, chooseTarget, won};
+	enum TurnType {nothing, chooseDirection, chooseTarget, won, error};
 	TurnType turnType;
+	enum ErrorCode {opening, reading, logic};
+	ErrorCode errorCode;
 	InterfaceButton fight, move, idle, savegame, exit;
 	sf::Texture fightIm, moveIm, idleIm, savegameIm, exitIm;
 
@@ -57,6 +59,7 @@ public:
 	void nothingTurn(sf::RenderWindow & window, sf::View & view);
 	void chooseDirectionTurn(sf::RenderWindow & window, sf::View & view);
 	void chooseTargetTurn(sf::RenderWindow & window, sf::View & view);
+	void errorScreen(sf::RenderWindow & window, sf::View & view);
 	void setNewTurn();
 	void unitUICheck(sf::RenderWindow & window, sf::View & view);
 	void unitUICheck(sf::Event& event);

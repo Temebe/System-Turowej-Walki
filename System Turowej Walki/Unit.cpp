@@ -94,6 +94,11 @@ double Unit::getHp()
 	return hp;
 }
 
+int Unit::getMovement()
+{
+	return movement;
+}
+
 int Unit::getMaxHp()
 {
 	return maxHp;
