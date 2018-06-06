@@ -4,10 +4,10 @@
 
 Game::Game()
 {
-	window.create(sf::VideoMode{ 1024, 800 }, "System Turowej Walki");
+	window.create(sf::VideoMode{ 1024, 800 }, "System Turowej Walki", sf::Style::Close);
 	window.setFramerateLimit(60);
 	actualScene = 0;
-	music.openFromFile("include/music/menu.ogg");
+	music.openFromFile("include/music/music.ogg");
 	music.setVolume(10);
 	music.setLoop(true);
 	music.play();

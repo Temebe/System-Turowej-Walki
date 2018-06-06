@@ -6,19 +6,20 @@ MenuScene::MenuScene()
 {
 	test.setFont(font);
 	test.setString("System walki turowej");
-	test.setFillColor(sf::Color::Red);
-	test.setPosition(200, 200);
+	test.setCharacterSize(60);
+	//test.setFillColor(sf::Color::Red);
+	test.setPosition(250, 200);
 	version.setFont(font);
 	version.setString("alpha 1.2");
 	version.setPosition(900, 750);
 	newGame.setTextureImage("include/buttons/newgame.png");
-	newGame.setPosition(310, 300);
+	newGame.setPosition(422, 300);
 	loadGame.setTextureImage("include/buttons/loadgame.png");
-	loadGame.setPosition(310, 350);
+	loadGame.setPosition(422, 350);
 	options.setTextureImage("include/buttons/options.png");
-	options.setPosition(310, 400);
+	options.setPosition(422, 400);
 	exit.setTextureImage("include/buttons/exit.png");
-	exit.setPosition(310, 450);
+	exit.setPosition(422, 450);
 }
 
 MenuScene::~MenuScene()
@@ -28,7 +29,7 @@ MenuScene::~MenuScene()
 int MenuScene::render(sf::RenderWindow& window, Save& save)
 {
 	while (true) {
-		window.clear(sf::Color::Black);
+		window.clear(sf::Color(120, 145, 205));
 		window.draw(newGame);
 		window.draw(loadGame);
 		window.draw(options);

@@ -701,55 +701,55 @@ void BattlegroundScene::saveGameAction(Save& save)
 	Unit *tempUnit;
 	ofstr.open("save.txt");
 	if (!ofstr.good()) { return; }
-	ofstr << "mps " << save.getMapSize() << std::endl;
+	ofstr << "mps " << save.getMapSize();
 	for (int i = 0; i < knightsA.size(); i++) {
 		tempUnit = knightsA.at(i);
-		ofstr << "kna ";
+		ofstr << std::endl << "kna ";
 		writeDownUnit(ofstr, tempUnit);
 	}
 	for (int i = 0; i < knightsB.size(); i++) {
 		tempUnit = knightsB.at(i);
-		ofstr << "knb ";
+		ofstr << std::endl << "knb ";
 		writeDownUnit(ofstr, tempUnit);
 	}
 	for (int i = 0; i < warriorsA.size(); i++) {
 		tempUnit = warriorsA.at(i);
-		ofstr << "waa ";
+		ofstr << std::endl << "waa ";
 		writeDownUnit(ofstr, tempUnit);
 	}
 	for (int i = 0; i < warriorsB.size(); i++) {
 		tempUnit = warriorsB.at(i);
-		ofstr << "wab ";
+		ofstr << std::endl << "wab ";
 		writeDownUnit(ofstr, tempUnit);
 	}
 	for (int i = 0; i < ridersA.size(); i++) {
 		tempUnit = ridersA.at(i);
-		ofstr << "ria ";
+		ofstr << std::endl << "ria ";
 		writeDownUnit(ofstr, tempUnit);
 	}
 	for (int i = 0; i < ridersB.size(); i++) {
 		tempUnit = ridersB.at(i);
-		ofstr << "rib ";
+		ofstr << std::endl << "rib ";
 		writeDownUnit(ofstr, tempUnit);
 	}
 	for (int i = 0; i < magesA.size(); i++) {
 		tempUnit = magesA.at(i);
-		ofstr << "maa ";
+		ofstr << std::endl << "maa ";
 		writeDownUnit(ofstr, tempUnit);
 	}
 	for (int i = 0; i < magesB.size(); i++) {
 		tempUnit = magesB.at(i);
-		ofstr << "mab ";
+		ofstr << std::endl << "mab ";
 		writeDownUnit(ofstr, tempUnit);
 	}
 	for (int i = 0; i < archersA.size(); i++) {
 		tempUnit = archersA.at(i);
-		ofstr << "ara ";
+		ofstr << std::endl << "ara ";
 		writeDownUnit(ofstr, tempUnit);
 	}
 	for (int i = 0; i < archersB.size(); i++) {
 		tempUnit = archersB.at(i);
-		ofstr << "arb ";
+		ofstr << std::endl << "arb ";
 		writeDownUnit(ofstr, tempUnit);
 	}
 	ofstr.close();
@@ -762,9 +762,8 @@ void BattlegroundScene::writeDownUnit(std::ofstream & ofstr, Unit *tempUnit)
 	else ofstr << "not ";
 	if (tempUnit->hadTurn()) ofstr << "yes ";
 	else ofstr << "no ";
-	if (tempUnit->isMovable()) ofstr << "yes ";
-	else ofstr << "no ";
-	ofstr << std::endl;
+	if (tempUnit->isMovable()) ofstr << "yes";
+	else ofstr << "no";
 }
 
 void BattlegroundScene::loadGameAction(Save& save)

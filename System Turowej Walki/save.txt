@@ -1,5 +1,7 @@
 mps 5
-kna 2 2 15 1 not yes yes 
-waa 2 3 12 0 can no no 
-wab 3 1 8 2 can no yes 
-rib 3 2 12 5 can no yes
+kna 1 1 12 0 can yes no
+kna 2 1 13.5 0 not yes no
+waa 2 0 10 0 not yes no
+wab 1 2 10 0 not yes no
+rib 3 0 7 5 can no yes
+arb 3 3 8 1 not no yes

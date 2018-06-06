@@ -346,7 +346,7 @@ Rider::Rider(bool choice, std::vector<Unit*> *parent)
 
 void Rider::attack(Square *target)
 {
-	target->getUnit()->takeDmg((movement - tempMovement)*1.5);
+	target->getUnit()->takeDmg(std::max((movement - tempMovement)*1.5, 1.0));
 	this->hasAttacked = true;
 }
 

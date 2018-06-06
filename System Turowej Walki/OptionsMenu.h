@@ -6,7 +6,7 @@ class OptionsMenu :
 	bool mouseHold;
 	InterfaceButton volUp, volDn, returnButton;
 	sf::Texture up, dn;
-	sf::Text volText;
+	sf::Text volText, optionTitle, thanks;
 public:
 	OptionsMenu();
 	~OptionsMenu();

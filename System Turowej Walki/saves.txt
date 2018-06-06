@@ -1,5 +1,0 @@
-mps 5
-kna 2 2 15 1 not yes yes 
-waa 2 3 10 0 can no no 
-wab 3 1 8 2 can no yes 
-rib 3 2 12 5 can no yes

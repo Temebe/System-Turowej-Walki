@@ -57,6 +57,10 @@ int SelectScene::render(sf::RenderWindow& window, Save& save)
 		window.draw(mapSizeText);
 		window.draw(startGame);
 		window.pollEvent(event);
+		if (errorOccured) {
+			window.draw(errorBox);
+			window.draw(errorText);
+		}
 		/*if (event.type == sf::Event::Closed) {
 			window.close();
 			return 5;
@@ -68,6 +72,7 @@ int SelectScene::render(sf::RenderWindow& window, Save& save)
 		}
 		if ((event.type == sf::Event::MouseButtonPressed)&&(mouseHold != true)) {
 			mouseHold = true;
+			if ((errorOccured) && (errorBox.isMouseOver(mouse, window))) errorOccured = false;
 			if ((knightA.isMouseOver(mouse, window)) || (knightB.isMouseOver(mouse, window))) {
 				std::cout << "knight" << std::endl;
 			}
@@ -217,18 +222,40 @@ int SelectScene::render(sf::RenderWindow& window, Save& save)
 			}
 			if (startGame.isMouseOver(mouse, window)) {
 				std::cout << "start game" << std::endl;
-				//1 -> knight, 2 -> warrior, 3 -> archer, 4 -> rider, 5 -> mage
-				save.setTeamA(va1, va3, va2, va5, va4);
-				save.setTeamB(vb1, vb3, vb2, vb5, vb4);
-				save.setMapSize(mapSize);
-				save.setLoadingMode(false);
-				return 4;
+				if (gameReady()) {
+					//1 -> knight, 2 -> warrior, 3 -> archer, 4 -> rider, 5 -> mage
+					save.setTeamA(va1, va3, va2, va5, va4);
+					save.setTeamB(vb1, vb3, vb2, vb5, vb4);
+					save.setMapSize(mapSize);
+					save.setLoadingMode(false);
+					return 4;
+				}
 			}
 		}
 		if (event.type == sf::Event::MouseButtonReleased) {
 			mouseHold = false;
 		}
 		window.display();
+	}
+}
+
+bool SelectScene::gameReady()
+{
+	try {
+		if (mapSize < 4) throw tooSmallMap;
+		if (va1 + va2 + va3 + va4 + va5 == 0) throw emptyTeams;
+		if (vb1 + vb2 + vb3 + vb4 + vb5 == 0) throw emptyTeams;
+		if (va1 + va2 + va3 + va4 + va5 != vb1 + vb2 + vb3 + vb4 + vb5) throw notEqualTeams;
+		if (va1 + va2 + va3 + va4 + va5 > ((mapSize - (mapSize % 2)) * mapSize) / 2) throw tooManyUnits;
+		return true;
+	}
+	catch (ErrorCode code) {
+		errorOccured = true;
+		if (code == tooSmallMap) errorText.setString("Map have to be at least 4x4 big.\n\nClick here to proceed...");
+		if (code == emptyTeams) errorText.setString("Every team must have at least one\nunit.\n\nClick here to proceed...");
+		if (code == notEqualTeams) errorText.setString("Both teams have to have same\namount of units.\n\nClick here to proceed...");
+		if (code == tooManyUnits) errorText.setString("There are too many units for this\nsize of map.\n\nClick here to proceed...");
+		return false;
 	}
 }
 
@@ -365,6 +392,13 @@ SelectScene::SelectScene()
 	startGameTxt.loadFromFile("include/buttons/startgame.png");
 	startGame.setTexture(startGameTxt);
 	startGame.setPosition(437, 700);
+	errorBoxIm.loadFromFile("include/buttons/dialogueWindow.png");
+	errorBox.setTexture(errorBoxIm);
+	errorBox.setPosition(362, 325);
+	errorText.setFont(font);
+	errorText.setCharacterSize(20);
+	errorText.setFillColor(sf::Color::Black);
+	errorText.setPosition(370, 330);
 }
 
 SelectScene::~SelectScene()
