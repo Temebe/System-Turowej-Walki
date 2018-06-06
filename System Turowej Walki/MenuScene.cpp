@@ -10,7 +10,7 @@ MenuScene::MenuScene()
 	//test.setFillColor(sf::Color::Red);
 	test.setPosition(250, 200);
 	version.setFont(font);
-	version.setString("alpha 1.2");
+	version.setString("alpha 1.3");
 	version.setPosition(900, 750);
 	newGame.setTextureImage("include/buttons/newgame.png");
 	newGame.setPosition(422, 300);

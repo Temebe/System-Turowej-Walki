@@ -32,8 +32,8 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 			}
 		}
 		if (menuOpened) {
-			exit.setPosition(view.getCenter().x - 75, view.getCenter().y - 50);
-			savegame.setPosition(view.getCenter().x - 75, view.getCenter().y + 50);
+			savegame.setPosition(view.getCenter().x - 75, view.getCenter().y - 50);
+			exit.setPosition(view.getCenter().x - 75, view.getCenter().y + 50);
 			window.draw(exit);
 			window.draw(savegame);
 		}
@@ -144,7 +144,7 @@ int BattlegroundScene::render(sf::RenderWindow & window, Save& save, sf::View& v
 				}
 			}
 			if (event.key.code == sf::Keyboard::Escape) {
-				menuOpened = true;
+				menuOpened = !menuOpened;
 			}
 		}
 		if ((mouse.isButtonPressed(sf::Mouse::Left)) && (mouseHold != true)) {
